@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Practicum Report - TravelNest</title>
+<style>
+body { font-family: "Times New Roman", serif; line-height: 1.5; margin: 36px; }
+h1, h2, h3 { margin-top: 20px; margin-bottom: 8px; }
+h1 { font-size: 24px; text-align: center; }
+h2 { font-size: 18px; border-bottom: 1px solid #000; }
+h3 { font-size: 15px; }
+p { text-align: justify; margin: 8px 0; }
+.table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+.table th, .table td { border: 1px solid #000; padding: 6px; vertical-align: top; }
+.center { text-align: center; }
+.page-break { page-break-before: always; }
+ul { margin-top: 6px; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<h1>PRACTICUM REPORT</h1>
+<p class="center"><b>Project Title:</b> TravelNest - Multi-Vendor Travel Booking System</p>
+<p class="center"><b>Project Type:</b> Web Application (Laravel/PHP)</p>
+<p class="center"><b>Student ID:</b> 21303158</p>
+<p class="center"><b>Department:</b> Computer Science and Engineering</p>
+<p class="center"><b>Date:</b> April 2026</p>
+
+<div class="page-break"></div>
+
+<h2>Abstract</h2>
+<p>
+This practicum work presents the design and implementation of TravelNest, a Laravel-based multi-vendor travel booking system. The system supports end-to-end customer booking and payment workflows, including package discovery, booking creation, coupon application, secure payment processing, and booking confirmation. In addition to customer-facing functions, the platform provides a comprehensive administrative panel for managing agencies, users, packages, bookings, hotels, transport data, notifications, reports, and platform settings.
+</p>
+<p>
+The project follows the MVC architectural pattern and uses a relational database schema with migration-driven evolution. Payment integration is implemented through a gateway callback architecture (success, fail, cancel, IPN), and role-based access control is applied to secure administration features. The resulting application demonstrates practical full-stack development skills including data modeling, backend validation, business logic implementation, route protection, and operational reporting.
+</p>
+
+<h2>Table of Contents</h2>
+<p>
+1. Introduction<br>
+2. Problem Statement<br>
+3. Objectives<br>
+4. Scope of Work<br>
+5. Methodology and Development Approach<br>
+6. Technology Stack<br>
+7. System Architecture Overview<br>
+8. Functional Module Overview<br>
+9. Database Design Overview<br>
+10. Core Workflow Analysis<br>
+11. Security and Access Control<br>
+12. Validation, Error Handling, and Logging<br>
+13. Testing and Quality Assurance Status<br>
+14. Deployment and Run Procedure<br>
+15. Limitations<br>
+16. Future Enhancement Plan<br>
+17. Conclusion
+</p>
+
+<div class="page-break"></div>
+
+<h2>1. Introduction</h2>
+<p>
+Digital transformation in tourism and travel services requires systems that can support multiple business stakeholders while maintaining a simple booking experience for customers. TravelNest is developed as a practical solution to address this requirement by combining user-friendly package browsing, controlled booking processing, integrated payment handling, and robust administration functionality in one centralized platform.
+</p>
+<p>
+The project has been implemented using Laravel 10, PHP 8.1, Blade templates, MySQL-compatible relational design, and Vite-based frontend assets. The primary focus of this practicum is building a maintainable, secure, and modular web system that reflects real-world travel business operations.
+</p>
+
+<h2>2. Problem Statement</h2>
+<p>
+Traditional travel booking processes are often fragmented across social media, messaging channels, and manually maintained records. Such workflows suffer from poor booking traceability, payment uncertainty, inconsistent data quality, and limited reporting capability. For multi-vendor travel operations, the challenge becomes greater due to the need to manage agencies, packages, inventory-like capacity, and customer communication in a unified environment.
+</p>
+<p>
+This project addresses the above issues by introducing a structured platform where booking, payment, and administration are integrated through a role-aware and database-driven architecture.
+</p>
+
+<h2>3. Objectives</h2>
+<ul>
+<li>Develop a complete travel booking platform for customers and administrators.</li>
+<li>Implement secure authentication and role-aware admin access.</li>
+<li>Support booking lifecycle from package selection to payment confirmation.</li>
+<li>Integrate payment gateway callback processing and verification logic.</li>
+<li>Enable administrative management of users, agencies, packages, bookings, hotels, and transport.</li>
+<li>Provide reporting-ready operational metrics for management insight.</li>
+<li>Maintain a migration-driven database structure for scalability.</li>
+</ul>
+
+<h2>4. Scope of Work</h2>
+<h3>4.1 In Scope</h3>
+<ul>
+<li>Public pages for home and content browsing.</li>
+<li>User registration, login, logout, and session-based authentication.</li>
+<li>Package-based booking creation with optional coupon application.</li>
+<li>Checkout with multiple payment method options and gateway integration.</li>
+<li>Payment callback handling and booking status updates.</li>
+<li>Admin panel modules for agencies, users, bookings, packages, notifications, reports, settings, hotels, and transport.</li>
+<li>Core schema entities and relationships through Laravel migrations/models.</li>
+</ul>
+<h3>4.2 Out of Scope</h3>
+<ul>
+<li>Native mobile application implementation.</li>
+<li>Advanced AI recommendation engine.</li>
+<li>Full production-grade CI/CD automation pipeline.</li>
+<li>Comprehensive performance benchmarking at scale.</li>
+</ul>
+
+<h2>5. Methodology and Development Approach</h2>
+<p>
+The project was developed incrementally using Laravel MVC conventions. The workflow followed these phases: requirement understanding, route/controller planning, data model design, migration implementation, authentication hardening, payment flow implementation, admin module integration, and final testing/refinement.
+</p>
+<p>
+A practical code-first methodology was used where each module was implemented in vertical slices: routes, controller methods, model relations, views, and migration support. This approach reduced module coupling and made iterative improvements easier.
+</p>
+
+<h2>6. Technology Stack</h2>
+<table class="table">
+<tr><th>Layer</th><th>Technology</th><th>Usage</th></tr>
+<tr><td>Backend</td><td>PHP 8.1, Laravel 10</td><td>Core business logic, routing, ORM, middleware</td></tr>
+<tr><td>Frontend</td><td>Blade, HTML/CSS/JS</td><td>Customer and admin interface rendering</td></tr>
+<tr><td>Asset Build</td><td>Vite 5, Laravel Vite Plugin</td><td>Frontend build and development serving</td></tr>
+<tr><td>Database</td><td>MySQL-compatible relational model</td><td>Persistent storage for all modules</td></tr>
+<tr><td>HTTP Integration</td><td>Guzzle/Http Client</td><td>Payment gateway communication</td></tr>
+<tr><td>Auth</td><td>Laravel Session Auth + Sanctum package availability</td><td>User authentication and protected route access</td></tr>
+<tr><td>Testing</td><td>PHPUnit 10 configuration</td><td>Unit/Feature test structure support</td></tr>
+</table>
+
+<div class="page-break"></div>
+
+<h2>7. System Architecture Overview</h2>
+<h3>7.1 Architectural Style</h3>
+<p>
+TravelNest follows a layered MVC architecture:
+</p>
+<ul>
+<li><b>Presentation Layer:</b> Blade templates for customer and admin user interfaces.</li>
+<li><b>Application Layer:</b> Controllers for request handling, validation, authorization, and orchestration.</li>
+<li><b>Domain/Data Layer:</b> Eloquent models and migration-based relational schema.</li>
+<li><b>Integration Layer:</b> External payment gateway API calls and callback processing.</li>
+</ul>
+
+<h3>7.2 High-Level Components</h3>
+<ul>
+<li>Public content and package exploration component</li>
+<li>Authentication component (user and admin login pathways)</li>
+<li>Booking component (creation, coupon, status)</li>
+<li>Payment component (initiation, callback verification, logging)</li>
+<li>Admin management component (CRUD and reporting)</li>
+<li>System settings and notification component</li>
+</ul>
+
+<h2>8. Functional Module Overview</h2>
+<h3>8.1 Authentication and Authorization</h3>
+<p>
+User and admin login are handled by dedicated controllers. Upon successful authentication, role and admin flags are checked to route users appropriately. Admin routes are protected using auth and admin middleware to prevent unauthorized access.
+</p>
+
+<h3>8.2 Package and Booking Module</h3>
+<p>
+Customers can create bookings from package data. Booking records include user linkage, optional agency/package linkage, booking reference generation, travel date, amount, discount, and status. Coupon validation supports fixed and percentage discounts with active/expiry checks.
+</p>
+
+<h3>8.3 Payment Module</h3>
+<p>
+Payment initiation creates a pending record with a unique transaction ID. The system then communicates with the gateway and redirects users for transaction completion. Callback endpoints process success, fail, cancel, and IPN events. Verification logic checks response status and amount/currency consistency before setting final payment and booking states.
+</p>
+
+<h3>8.4 Admin Operations</h3>
+<p>
+The admin panel enables operational governance through user, agency, package, booking, payment, hotel, transport, and notification management. The reporting module aggregates KPIs such as revenue, payment success count, booking trends, coupon usage, and inventory indicators.
+</p>
+
+<h3>8.5 Settings and Notifications</h3>
+<p>
+System settings are stored key-value style and updated through admin forms. Notification records support user-scoped or global administrative alerts with read/unread tracking.
+</p>
+
+<h2>9. Database Design Overview</h2>
+<h3>9.1 Primary Business Entities</h3>
+<table class="table">
+<tr><th>Entity</th><th>Purpose</th><th>Key Notes</th></tr>
+<tr><td>users</td><td>System users (customer/admin)</td><td>Role and admin flags used for authorization</td></tr>
+<tr><td>agencies</td><td>Agency/vendor information</td><td>Linked with packages and bookings</td></tr>
+<tr><td>packages</td><td>Travel package catalog</td><td>Belongs to agency; booking source</td></tr>
+<tr><td>bookings</td><td>Customer booking records</td><td>Contains references, amount, discount, coupon_code</td></tr>
+<tr><td>payments</td><td>Payment transactions</td><td>Linked to user and booking; status and gateway response</td></tr>
+<tr><td>payment_logs</td><td>Gateway audit trail</td><td>Tracks request/response payloads</td></tr>
+<tr><td>coupons</td><td>Discount policy records</td><td>Active/expiry support</td></tr>
+<tr><td>admin_notifications</td><td>Admin notification feed</td><td>User-specific or global notifications</td></tr>
+<tr><td>settings</td><td>Config key-value storage</td><td>System-level configuration</td></tr>
+<tr><td>hotels</td><td>Hotel management data</td><td>Admin managed module</td></tr>
+<tr><td>transports</td><td>Transport management data</td><td>Admin managed module</td></tr>
+</table>
+
+<h3>9.2 Relationship Summary</h3>
+<ul>
+<li>One user can have many bookings.</li>
+<li>One agency can have many packages and bookings.</li>
+<li>One package can appear in many bookings.</li>
+<li>One booking can have many payments (retry-capable flow).</li>
+<li>One payment can have many payment logs.</li>
+<li>One user can have many admin notifications.</li>
+<li>Coupons are logically linked to bookings through coupon_code usage in booking flow.</li>
+</ul>
+
+<div class="page-break"></div>
+
+<h2>10. Core Workflow Analysis</h2>
+<h3>10.1 Customer Booking Workflow</h3>
+<ol>
+<li>User browses packages and submits booking request.</li>
+<li>System validates input and loads package details.</li>
+<li>Coupon (if provided) is validated against active and expiry rules.</li>
+<li>Booking is created with pending status and unique booking reference.</li>
+<li>User is redirected to checkout.</li>
+</ol>
+
+<h3>10.2 Payment Processing Workflow</h3>
+<ol>
+<li>User selects payment method and initiates payment.</li>
+<li>System creates pending payment record with unique transaction ID.</li>
+<li>Gateway token and payment session are requested.</li>
+<li>User is redirected to gateway checkout.</li>
+<li>Gateway callback is received (success/fail/cancel/IPN).</li>
+<li>Verification API is called for payment validation.</li>
+<li>If valid, payment status is success and booking status becomes confirmed.</li>
+<li>Gateway interaction logs are persisted in payment_logs.</li>
+</ol>
+
+<h3>10.3 Admin Operational Workflow</h3>
+<ol>
+<li>Admin authenticates through dedicated portal.</li>
+<li>Dashboard displays operational snapshot.</li>
+<li>Admin performs CRUD operations on agencies, users, packages, hotels, transport.</li>
+<li>Bookings can be filtered/exported and status can be updated.</li>
+<li>Payments and reports provide financial/operational insight.</li>
+<li>Notifications and settings are managed from centralized modules.</li>
+</ol>
+
+<h2>11. Security and Access Control</h2>
+<ul>
+<li>Session-based authentication with token regeneration on login.</li>
+<li>Admin routes protected by auth + admin middleware.</li>
+<li>Role/admin checks applied in both user and admin login logic.</li>
+<li>Booking ownership checks prevent unauthorized booking access.</li>
+<li>CSRF protection applied to form routes by Laravel middleware stack.</li>
+<li>Validation rules enforced at controller boundary for critical operations.</li>
+</ul>
+
+<h2>12. Validation, Error Handling, and Logging</h2>
+<ul>
+<li>Request-level validation in booking, coupon, and payment entry points.</li>
+<li>Explicit user-facing errors for invalid coupon/payment failures.</li>
+<li>Payment callback error handling for unmatched transactions.</li>
+<li>Gateway request/response payload logging for audit and troubleshooting.</li>
+<li>Status fallback to failed when verification conditions are not satisfied.</li>
+</ul>
+
+<h2>13. Testing and Quality Assurance Status</h2>
+<p>
+The project includes PHPUnit configuration with dedicated Unit and Feature test directories. The current codebase is structured for automated testing, including testing environment variable support and app source inclusion in coverage scope. While baseline test framework setup is present, production-grade comprehensive test coverage is identified as a continuous improvement target.
+</p>
+
+<h2>14. Deployment and Run Procedure</h2>
+<h3>14.1 Prerequisites</h3>
+<ul>
+<li>PHP 8.1+</li>
+<li>Composer</li>
+<li>Node.js and npm</li>
+<li>MySQL-compatible database</li>
+</ul>
+
+<h3>14.2 Setup Steps</h3>
+<ol>
+<li>Clone the project repository.</li>
+<li>Run composer install and npm install.</li>
+<li>Create environment file and generate app key.</li>
+<li>Configure database and payment credentials.</li>
+<li>Run migrations.</li>
+<li>Run Laravel development server and Vite asset pipeline.</li>
+</ol>
+
+<h2>15. Limitations</h2>
+<ul>
+<li>Some modules are oriented toward admin-managed workflows and may require further policy granularity.</li>
+<li>Scalability hardening (queue-first email/event architecture) can be expanded.</li>
+<li>Automated test coverage can be increased for payment edge cases and admin workflows.</li>
+<li>Advanced observability and alerting integrations are currently minimal.</li>
+</ul>
+
+<h2>16. Future Enhancement Plan</h2>
+<ul>
+<li>Introduce granular role-permission matrix with policies and gates.</li>
+<li>Add stronger test automation with CI integration.</li>
+<li>Extend reporting exports and dashboards (CSV/PDF and trend intelligence).</li>
+<li>Add user communication automation (email/SMS notifications).</li>
+<li>Improve performance through caching and query optimization for high-traffic scenarios.</li>
+<li>Provide partner-facing API endpoints with proper rate limiting and token scopes.</li>
+</ul>
+
+<h2>17. Conclusion</h2>
+<p>
+TravelNest successfully demonstrates a complete practicum-scale web engineering solution for multi-vendor travel booking operations. The system combines structured data design, secure access control, booking-payment orchestration, and practical admin tooling in a single Laravel application. The implemented architecture is maintainable, extensible, and suitable for continued academic and production-oriented enhancement.
+</p>
+<p>
+This project validates practical competence in backend development, relational modeling, business workflow implementation, and full-stack integration, while also identifying clear pathways for future quality, performance, and feature maturity.
+</p>
+
+</body>
+</html>

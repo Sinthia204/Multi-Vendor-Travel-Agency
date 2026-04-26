@@ -1,0 +1,401 @@
+@startuml Main_System_Use_Case
+title TravelNest - Main System Use Case (Word-Ready)
+
+left to right direction
+scale 1.5
+
+skinparam dpi 300
+skinparam shadowing false
+skinparam monochrome true
+skinparam linetype ortho
+skinparam defaultFontName "Times New Roman"
+skinparam defaultFontSize 18
+skinparam ranksep 100
+skinparam nodesep 80
+
+skinparam actor {
+  FontSize 20
+  FontStyle bold
+  BorderColor black
+}
+
+skinparam usecase {
+  FontSize 18
+  FontStyle bold
+  BorderColor black
+  BackgroundColor white
+}
+
+skinparam package {
+  BorderColor black
+  FontSize 20
+  FontStyle bold
+}
+
+actor "Guest / Visitor" as Guest
+actor "Customer" as Customer
+actor "Admin" as Admin
+actor "Payment Gateway\n(ShurjoPay)" as Gateway
+actor "Email Service" as Email
+
+rectangle "TravelNest" as System {
+  package "Customer Booking and Payment" {
+    usecase "<b>Browse content\n(Home, Destinations, Experiences, Stories, Contact)</b>" as UC_Browse
+    usecase "<b>Search / Filter packages</b>" as UC_Search
+    usecase "<b>View packages</b>" as UC_View
+    usecase "<b>Register account</b>" as UC_Register
+    usecase "<b>Login</b>" as UC_Login
+    usecase "<b>Logout</b>" as UC_Logout
+    usecase "<b>Validate credentials</b>" as UC_Validate
+    usecase "<b>Book package</b>" as UC_Book
+    usecase "<b>Apply / Remove coupon</b>" as UC_Coupon
+    usecase "<b>Checkout payment</b>" as UC_Checkout
+    usecase "<b>Select payment method</b>" as UC_SelectMethod
+    usecase "<b>Initiate payment</b>" as UC_InitiatePayment
+    usecase "<b>Handle payment callback\n(success / fail / cancel / ipn)</b>" as UC_Callback
+    usecase "<b>Send booking confirmation email</b>" as UC_SendEmail
+  }
+
+  package "Administration" {
+    usecase "<b>Admin login</b>" as UC_AdminLogin
+    usecase "<b>View admin dashboard</b>" as UC_Dashboard
+    usecase "<b>View reports & analytics</b>" as UC_Reports
+    usecase "<b>Generate sales reports</b>" as UC_SalesReports
+    usecase "<b>View performance metrics</b>" as UC_Metrics
+    usecase "<b>Export reports</b>" as UC_ExportReports
+    usecase "<b>Manage agencies (CRUD, export)</b>" as UC_Agencies
+    usecase "<b>Export agencies</b>" as UC_ExportAgencies
+    usecase "<b>Manage users (CRUD, export)</b>" as UC_Users
+    usecase "<b>Export users</b>" as UC_ExportUsers
+    usecase "<b>Manage bookings (status, export)</b>" as UC_Bookings
+    usecase "<b>Export bookings</b>" as UC_ExportBookings
+    usecase "<b>Manage packages (CRUD)</b>" as UC_Packages
+    usecase "<b>Manage hotels (CRUD)</b>" as UC_Hotels
+    usecase "<b>Manage transport (CRUD)</b>" as UC_Transport
+    usecase "<b>View payments</b>" as UC_Payments
+    usecase "<b>View / Mark notifications</b>" as UC_Notifications
+    usecase "<b>Update settings\n(general, payment, email, system)</b>" as UC_Settings
+    usecase "<b>Configure system</b>" as UC_Configure
+    usecase "<b>Set user preferences</b>" as UC_Preferences
+    usecase "<b>Backup data</b>" as UC_Backup
+  }
+}
+
+Guest -- UC_Browse
+Guest -- UC_Search
+Guest -- UC_View
+Guest -- UC_Register
+Guest -- UC_Login
+
+Customer -- UC_Browse
+Customer -- UC_Search
+Customer -- UC_View
+Customer -- UC_Logout
+Customer -- UC_Book
+Customer -- UC_Coupon
+Customer -- UC_Checkout
+
+Admin -- UC_AdminLogin
+Admin -- UC_Dashboard
+Admin -- UC_Reports
+Admin -- UC_Agencies
+Admin -- UC_Users
+Admin -- UC_Bookings
+Admin -- UC_Packages
+Admin -- UC_Hotels
+Admin -- UC_Transport
+Admin -- UC_Payments
+Admin -- UC_Notifications
+Admin -- UC_Settings
+
+Gateway -- UC_InitiatePayment
+Gateway -- UC_Callback
+Email -- UC_SendEmail
+
+UC_Book ..> UC_Coupon : <<include>>
+UC_Coupon ..> UC_Checkout : <<extend>>
+UC_Book ..> UC_Checkout : <<include>>
+UC_Checkout ..> UC_SelectMethod : <<include>>
+UC_Checkout ..> UC_InitiatePayment : <<include>>
+UC_Callback ..> UC_SendEmail : <<include>>
+UC_Login ..> UC_Validate : <<include>>
+UC_AdminLogin ..> UC_Validate : <<include>>
+UC_Agencies ..> UC_ExportAgencies : <<include>>
+UC_Users ..> UC_ExportUsers : <<include>>
+UC_Bookings ..> UC_ExportBookings : <<include>>
+UC_Reports ..> UC_SalesReports : <<include>>
+UC_Reports ..> UC_Metrics : <<include>>
+UC_ExportReports ..> UC_Reports : <<extend>>
+UC_Settings ..> UC_Configure : <<include>>
+UC_Settings ..> UC_Preferences : <<include>>
+UC_Backup ..> UC_Settings : <<extend>>
+
+legend bottom
+|= Relationship Type (Clear Text) |= Meaning |
+| <<include>> | INCLUDE relationship |
+| <<extend>> | EXTEND relationship |
+|= Pair List |= Source -> Target |
+| <<include>> | Book package -> Apply / Remove coupon |
+| <<include>> | Book package -> Checkout payment |
+| <<include>> | Checkout payment -> Select payment method |
+| <<include>> | Checkout payment -> Initiate payment |
+| <<include>> | Handle payment callback -> Send booking confirmation email |
+| <<include>> | Login -> Validate credentials |
+| <<include>> | Admin login -> Validate credentials |
+| <<include>> | Manage agencies (CRUD, export) -> Export agencies |
+| <<include>> | Manage users (CRUD, export) -> Export users |
+| <<include>> | Manage bookings (status, export) -> Export bookings |
+| <<include>> | View reports & analytics -> Generate sales reports |
+| <<include>> | View reports & analytics -> View performance metrics |
+| <<include>> | Update settings (general, payment, email, system) -> Configure system |
+| <<include>> | Update settings (general, payment, email, system) -> Set user preferences |
+| <<extend>> | Apply / Remove coupon -> Checkout payment |
+| <<extend>> | Export reports -> View reports & analytics |
+| <<extend>> | Backup data -> Update settings (general, payment, email, system) |
+endlegend
+
+@enduml
+
+
+@startuml Customer_Use_Case
+title TravelNest - Customer Use Case (Readable Split)
+
+left to right direction
+scale 1.6
+
+skinparam dpi 300
+skinparam shadowing false
+skinparam monochrome true
+skinparam linetype ortho
+skinparam defaultFontName "Times New Roman"
+skinparam defaultFontSize 18
+skinparam ranksep 110
+skinparam nodesep 85
+
+skinparam actor {
+  FontSize 20
+  FontStyle bold
+  BorderColor black
+}
+
+skinparam usecase {
+  FontSize 18
+  FontStyle bold
+  BorderColor black
+  BackgroundColor white
+}
+
+actor "Guest / Visitor" as Guest
+actor "Customer" as Customer
+actor "Payment Gateway\n(ShurjoPay)" as Gateway
+actor "Email Service" as Email
+
+rectangle "TravelNest" as CustomerSystem {
+  usecase "<b>Browse content\n(Home, Destinations, Experiences, Stories, Contact)</b>" as C_Browse
+  usecase "<b>Search / Filter packages</b>" as C_Search
+  usecase "<b>View packages</b>" as C_View
+  usecase "<b>Register account</b>" as C_Register
+  usecase "<b>Login</b>" as C_Login
+  usecase "<b>Logout</b>" as C_Logout
+  usecase "<b>Validate credentials</b>" as C_Validate
+  usecase "<b>Book package</b>" as C_Book
+  usecase "<b>Apply / Remove coupon</b>" as C_Coupon
+  usecase "<b>Checkout payment</b>" as C_Checkout
+  usecase "<b>Select payment method</b>" as C_SelectMethod
+  usecase "<b>Initiate payment</b>" as C_InitiatePayment
+  usecase "<b>Handle payment callback\n(success / fail / cancel / ipn)</b>" as C_Callback
+  usecase "<b>Send booking confirmation email</b>" as C_SendEmail
+}
+
+Guest -- C_Browse
+Guest -- C_Search
+Guest -- C_View
+Guest -- C_Register
+Guest -- C_Login
+
+Customer -- C_Browse
+Customer -- C_Search
+Customer -- C_View
+Customer -- C_Logout
+Customer -- C_Book
+Customer -- C_Coupon
+Customer -- C_Checkout
+
+Gateway -- C_InitiatePayment
+Gateway -- C_Callback
+Email -- C_SendEmail
+
+C_Book ..> C_Coupon : <<include>>
+C_Coupon ..> C_Checkout : <<extend>>
+C_Book ..> C_Checkout : <<include>>
+C_Checkout ..> C_SelectMethod : <<include>>
+C_Checkout ..> C_InitiatePayment : <<include>>
+C_Callback ..> C_SendEmail : <<include>>
+C_Login ..> C_Validate : <<include>>
+
+legend bottom
+|= Relationship Type (Clear Text) |= Meaning |
+| <<include>> | INCLUDE relationship |
+| <<extend>> | EXTEND relationship |
+|= Pair List |= Source -> Target |
+| <<include>> | Book package -> Apply / Remove coupon |
+| <<include>> | Book package -> Checkout payment |
+| <<include>> | Checkout payment -> Select payment method |
+| <<include>> | Checkout payment -> Initiate payment |
+| <<include>> | Handle payment callback -> Send booking confirmation email |
+| <<include>> | Login -> Validate credentials |
+| <<extend>> | Apply / Remove coupon -> Checkout payment |
+endlegend
+
+@enduml
+
+
+@startuml Vendor_Use_Case
+title TravelNest - Vendor Use Case (Current Scope)
+
+left to right direction
+scale 1.8
+
+skinparam dpi 300
+skinparam shadowing false
+skinparam monochrome true
+skinparam linetype ortho
+skinparam defaultFontName "Times New Roman"
+skinparam defaultFontSize 18
+skinparam ranksep 120
+skinparam nodesep 100
+
+skinparam actor {
+  FontSize 20
+  FontStyle bold
+  BorderColor black
+}
+
+skinparam usecase {
+  FontSize 18
+  FontStyle bold
+  BorderColor black
+  BackgroundColor white
+}
+
+skinparam note {
+  FontSize 16
+  BorderColor black
+  BackgroundColor white
+}
+
+actor "Vendor / Agency" as Vendor
+
+rectangle "TravelNest" as VendorSystem {
+  usecase "<b>No direct vendor-facing use case\ndefined in current use case model</b>" as V_None
+}
+
+Vendor -- V_None
+
+note right of V_None
+This diagram preserves the original scope exactly.
+Vendor/agency operations are managed through
+admin modules in the current model.
+No include/extend relationships are defined here.
+end note
+
+@enduml
+
+
+@startuml Admin_Use_Case
+title TravelNest - Admin Use Case (Readable Split)
+
+left to right direction
+scale 1.6
+
+skinparam dpi 300
+skinparam shadowing false
+skinparam monochrome true
+skinparam linetype ortho
+skinparam defaultFontName "Times New Roman"
+skinparam defaultFontSize 18
+skinparam ranksep 110
+skinparam nodesep 90
+
+skinparam actor {
+  FontSize 20
+  FontStyle bold
+  BorderColor black
+}
+
+skinparam usecase {
+  FontSize 18
+  FontStyle bold
+  BorderColor black
+  BackgroundColor white
+}
+
+actor "Admin" as Admin
+
+rectangle "TravelNest" as AdminSystem {
+  usecase "<b>Admin login</b>" as A_Login
+  usecase "<b>Validate credentials</b>" as A_Validate
+  usecase "<b>View admin dashboard</b>" as A_Dashboard
+  usecase "<b>View reports & analytics</b>" as A_Reports
+  usecase "<b>Generate sales reports</b>" as A_SalesReports
+  usecase "<b>View performance metrics</b>" as A_Metrics
+  usecase "<b>Export reports</b>" as A_ExportReports
+  usecase "<b>Manage agencies (CRUD, export)</b>" as A_Agencies
+  usecase "<b>Export agencies</b>" as A_ExportAgencies
+  usecase "<b>Manage users (CRUD, export)</b>" as A_Users
+  usecase "<b>Export users</b>" as A_ExportUsers
+  usecase "<b>Manage bookings (status, export)</b>" as A_Bookings
+  usecase "<b>Export bookings</b>" as A_ExportBookings
+  usecase "<b>Manage packages (CRUD)</b>" as A_Packages
+  usecase "<b>Manage hotels (CRUD)</b>" as A_Hotels
+  usecase "<b>Manage transport (CRUD)</b>" as A_Transport
+  usecase "<b>View payments</b>" as A_Payments
+  usecase "<b>View / Mark notifications</b>" as A_Notifications
+  usecase "<b>Update settings\n(general, payment, email, system)</b>" as A_Settings
+  usecase "<b>Configure system</b>" as A_Configure
+  usecase "<b>Set user preferences</b>" as A_Preferences
+  usecase "<b>Backup data</b>" as A_Backup
+}
+
+Admin -- A_Login
+Admin -- A_Dashboard
+Admin -- A_Reports
+Admin -- A_Agencies
+Admin -- A_Users
+Admin -- A_Bookings
+Admin -- A_Packages
+Admin -- A_Hotels
+Admin -- A_Transport
+Admin -- A_Payments
+Admin -- A_Notifications
+Admin -- A_Settings
+
+A_Login ..> A_Validate : <<include>>
+A_Agencies ..> A_ExportAgencies : <<include>>
+A_Users ..> A_ExportUsers : <<include>>
+A_Bookings ..> A_ExportBookings : <<include>>
+A_Reports ..> A_SalesReports : <<include>>
+A_Reports ..> A_Metrics : <<include>>
+A_ExportReports ..> A_Reports : <<extend>>
+A_Settings ..> A_Configure : <<include>>
+A_Settings ..> A_Preferences : <<include>>
+A_Backup ..> A_Settings : <<extend>>
+
+legend bottom
+|= Relationship Type (Clear Text) |= Meaning |
+| <<include>> | INCLUDE relationship |
+| <<extend>> | EXTEND relationship |
+|= Pair List |= Source -> Target |
+| <<include>> | Admin login -> Validate credentials |
+| <<include>> | Manage agencies (CRUD, export) -> Export agencies |
+| <<include>> | Manage users (CRUD, export) -> Export users |
+| <<include>> | Manage bookings (status, export) -> Export bookings |
+| <<include>> | View reports & analytics -> Generate sales reports |
+| <<include>> | View reports & analytics -> View performance metrics |
+| <<include>> | Update settings (general, payment, email, system) -> Configure system |
+| <<include>> | Update settings (general, payment, email, system) -> Set user preferences |
+| <<extend>> | Export reports -> View reports & analytics |
+| <<extend>> | Backup data -> Update settings (general, payment, email, system) |
+endlegend
+
+@enduml
