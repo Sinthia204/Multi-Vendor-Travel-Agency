@@ -127,4 +127,11 @@ class AdminBookingController extends Controller
             ->header('Content-Type', 'text/csv')
             ->header('Content-Disposition', 'attachment; filename="bookings.csv"');
     }
+
+    public function show(Booking $booking)
+    {
+        $booking->load(['user', 'agency', 'package', 'payments']);
+
+        return view('admin.bookings.show', compact('booking'));
+    }
 }

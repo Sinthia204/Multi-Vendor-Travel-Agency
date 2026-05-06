@@ -49,6 +49,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Prevent full-page horizontal scrolling; allow internal wrappers to scroll instead */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Space Grotesk', sans-serif;
   font-weight: 700;
@@ -706,6 +712,102 @@ a {
   flex: 1;
   padding: 1.5rem;
   overflow-y: auto;
+}
+
+/* Reports specific layout helpers */
+.reports-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+.reports-filters .reports-filter-item {
+  flex: 0 1 auto;
+  min-width: 0; /* allows children to shrink inside flex */
+}
+.reports-filters .reports-search {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+/* Summary cards grid: auto-fit with minmax to control column counts */
+.summary-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+/* Ensure charts fit and do not overflow their card */
+.chart-area {
+  padding: 1rem 1.5rem 1.5rem;
+  height: 240px;
+  position: relative;
+  max-width: 100%;
+  overflow: hidden;
+}
+.chart-area canvas {
+  max-width: 100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* Table wrapper should be the only thing that can scroll horizontally */
+.tn-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Sticky table headers inside scrollable table wrapper */
+.tn-table-wrap thead th {
+  position: sticky;
+  top: 0;
+  background: var(--card-bg);
+  z-index: 5;
+}
+
+/* Allow table cells to wrap on small screens to avoid forcing width */
+.tn-table tbody td {
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .tn-table tbody td { white-space: normal; }
+  .tn-table thead th { white-space: normal; }
+  .tn-card-header { padding: 0.875rem 1rem; }
+  .tn-card-body { padding: 0.875rem; }
+}
+
+/* Make sure all form controls respect container width */
+.tn-form-control {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 991px) {
+  .admin-sidebar {
+    position: fixed;
+    transform: translateX(-100%);
+  }
+  .admin-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  .admin-main {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .chart-area { height: 220px; }
+  .summary-grid { grid-template-columns: repeat(1, 1fr); }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .summary-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 992px) {
+  .summary-grid { grid-template-columns: repeat(4, 1fr); }
 }
 
 /* ============================================

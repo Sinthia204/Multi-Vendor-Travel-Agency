@@ -12,7 +12,7 @@ class AdminMiddleware
     {
         $user = $request->user();
 
-        $isAdmin = $user && (($user->role ?? null) === 'admin' || ($user->is_admin ?? false));
+        $isAdmin = $user && ($user->hasRole('Admin') || ($user->role ?? null) === 'admin' || ($user->is_admin ?? false));
 
         if (!$isAdmin) {
             return redirect('/')

@@ -2,17 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendPaymentConfirmationJob;
 use App\Models\Booking;
 use App\Models\Payment;
 use App\Models\PaymentLog;
+use App\Services\Payments\ShurjoPayService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
+    private ShurjoPayService $shurjoPay;
+
+    public function __construct(ShurjoPayService $shurjoPay)
+    {
+        $this->shurjoPay = $shurjoPay;
+    }
+
     public function checkout(Booking $booking)
     {
         $this->authorizeBooking($booking);
@@ -58,7 +66,7 @@ class PaymentController extends Controller
                 ->with('success', 'Payment completed successfully (demo).');
         }
 
-        $tokenData = $this->shurjoPayToken();
+        $tokenData = $this->shurjoPay->getToken();
         $this->logGateway(null, 'token', 'response', $tokenData);
         if (!$tokenData) {
             $payment->update(['status' => 'failed']);
@@ -106,6 +114,20 @@ class PaymentController extends Controller
     public function ipn(Request $request)
     {
         return $this->handleGatewayCallback($request, 'ipn');
+    }
+
+    public function invoice(Payment $payment)
+    {
+        $payment->loadMissing(['booking', 'user']);
+        $this->authorizeBooking($payment->booking);
+
+        $pdf = Pdf::loadView('payments.invoice', [
+            'payment' => $payment,
+            'booking' => $payment->booking,
+            'user' => $payment->user,
+        ]);
+
+        return $pdf->download("invoice-{$payment->transaction_id}.pdf");
     }
 
     private function handleGatewayCallback(Request $request, string $type)
@@ -185,17 +207,6 @@ class PaymentController extends Controller
             ->with('success', 'Payment completed successfully.');
     }
 
-    private function shurjoPayToken(): ?array
-    {
-        $this->logGateway(null, 'token', 'request', ['username' => config('services.shurjopay.username')]);
-        $response = Http::asForm()->post($this->shurjoPayBaseUrl() . '/api/get_token', [
-            'username' => config('services.shurjopay.username'),
-            'password' => config('services.shurjopay.password'),
-        ]);
-
-        return $response->ok() ? $response->json() : null;
-    }
-
     private function createShurjoPayPayment(array $tokenData, Request $request, Booking $booking, Payment $payment): array
     {
         $payload = [
@@ -223,39 +234,28 @@ class PaymentController extends Controller
 
         $this->logGateway($payment, 'initiate', 'request', $payload);
 
-        $response = Http::asForm()->post($this->shurjoPayBaseUrl() . '/api/secret-pay', $payload);
-
-        return $response->ok() ? $response->json() : [];
+        return $this->shurjoPay->createPayment($payload) ?? [];
     }
 
     private function verifyShurjoPayPayment(string $orderId): ?array
     {
-        $tokenData = $this->shurjoPayToken();
+        $tokenData = $this->shurjoPay->getToken();
         if (!$tokenData) {
             return null;
         }
 
         $this->logGateway(null, 'verify', 'request', ['order_id' => $orderId]);
-        $response = Http::asForm()->post($this->shurjoPayBaseUrl() . '/api/verification', [
+        return $this->shurjoPay->verifyPayment([
             'token' => $tokenData['token'] ?? null,
             'store_id' => $tokenData['store_id'] ?? config('services.shurjopay.store_id'),
             'order_id' => $orderId,
         ]);
-
-        return $response->ok() ? $response->json() : null;
-    }
-
-    private function shurjoPayBaseUrl(): string
-    {
-        return config('services.shurjopay.sandbox', true)
-            ? 'https://sandbox.shurjopayment.com'
-            : 'https://engine.shurjopayment.com';
     }
 
     private function authorizeBooking(Booking $booking): void
     {
         $user = auth()->user();
-        $isAdmin = $user && (($user->role ?? null) === 'admin' || ($user->is_admin ?? false));
+        $isAdmin = $user && ($user->hasRole('Admin') || ($user->role ?? null) === 'admin' || ($user->is_admin ?? false));
 
         if (!$isAdmin && $booking->user_id !== auth()->id()) {
             abort(403);
@@ -264,20 +264,7 @@ class PaymentController extends Controller
 
     private function sendConfirmationEmail(Payment $payment): void
     {
-        try {
-            Mail::raw(
-                "Your payment {$payment->transaction_id} has been confirmed for {$payment->booking->package_name}.",
-                function ($message) use ($payment) {
-                    $message->to($payment->user->email)
-                        ->subject('TravelNest Payment Confirmation');
-                }
-            );
-        } catch (\Throwable $exception) {
-            Log::warning('Payment confirmation email failed', [
-                'payment_id' => $payment->id,
-                'error' => $exception->getMessage(),
-            ]);
-        }
+        SendPaymentConfirmationJob::dispatch($payment->id);
     }
 
     private function logGateway(?Payment $payment, string $type, string $direction, ?array $payload = null): void

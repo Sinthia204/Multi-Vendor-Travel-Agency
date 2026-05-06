@@ -21,4 +21,11 @@ class AdminPaymentController extends Controller
 
         return view('admin.payments', compact('payments'));
     }
+
+    public function show(Payment $payment)
+    {
+        $payment->load(['booking.package.agency', 'booking.user', 'user', 'logs']);
+
+        return view('admin.payments.show', compact('payment'));
+    }
 }

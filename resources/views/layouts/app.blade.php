@@ -109,6 +109,7 @@
                         <li><a href="#">About TravelNest</a></li>
                         <li><a href="#">Careers</a></li>
                         <li><a href="#">Press</a></li>
+                        <li><a href="{{ route('agency.register') }}">Partner with us</a></li>
                     </ul>
                 </div>
                 <div>

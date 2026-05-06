@@ -59,6 +59,25 @@
             <span class="nav-label-text">Reports</span>
         </a>
 
+        <!-- CMS -->
+        <div class="nav-group-label">CMS</div>
+        <a href="{{ url('/admin/home-content') }}" class="sidebar-nav-item {{ request()->is('admin/home-content*') ? 'active' : '' }}">
+            <i class="fas fa-house"></i>
+            <span class="nav-label-text">Home Content</span>
+        </a>
+        <a href="{{ url('/admin/page-heroes') }}" class="sidebar-nav-item {{ request()->is('admin/page-heroes*') ? 'active' : '' }}">
+            <i class="fas fa-image"></i>
+            <span class="nav-label-text">Page Heroes</span>
+        </a>
+        <a href="{{ url('/admin/experiences') }}" class="sidebar-nav-item {{ request()->is('admin/experiences*') ? 'active' : '' }}">
+            <i class="fas fa-compass"></i>
+            <span class="nav-label-text">Experiences</span>
+        </a>
+        <a href="{{ url('/admin/stories') }}" class="sidebar-nav-item {{ request()->is('admin/stories*') ? 'active' : '' }}">
+            <i class="fas fa-book-open"></i>
+            <span class="nav-label-text">Stories</span>
+        </a>
+
         <!-- SYSTEM -->
         <div class="nav-group-label">SYSTEM</div>
         <a href="{{ url('/admin/settings') }}" class="sidebar-nav-item {{ request()->is('admin/settings*') ? 'active' : '' }}">

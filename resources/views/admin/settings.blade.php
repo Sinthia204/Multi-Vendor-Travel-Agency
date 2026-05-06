@@ -65,6 +65,10 @@
                                 <input type="text" name="contact_address" class="tn-form-control" value="{{ $settings['contact_address'] ?? '' }}">
                             </div>
                             <div class="col-12">
+                                <label class="form-label">Map Embed (HTML)</label>
+                                <textarea name="contact_map_embed" class="tn-form-control" rows="3">{{ $settings['contact_map_embed'] ?? '' }}</textarea>
+                            </div>
+                            <div class="col-12">
                                 <label class="form-label">Site Logo</label>
                                 <input type="file" name="site_logo" class="tn-form-control" accept="image/*">
                                 @if ($logo)

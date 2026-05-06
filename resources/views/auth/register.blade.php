@@ -56,6 +56,10 @@
                 <span>Already have an account?</span>
                 <a class="btn-login" href="{{ route('login') }}">Log in</a>
             </div>
+            <div class="form-row" style="margin-top:0.5rem;">
+                <span>Are you an agency?</span>
+                <a class="btn-login" href="{{ route('agency.register') }}">Partner with us</a>
+            </div>
         </div>
     </div>
 @endsection

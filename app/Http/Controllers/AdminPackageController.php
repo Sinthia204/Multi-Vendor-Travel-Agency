@@ -48,10 +48,16 @@ class AdminPackageController extends Controller
             'location' => ['required', 'string', 'max:255'],
             'capacity' => ['required', 'integer', 'min:0'],
             'status' => ['required', 'in:active,draft,sold-out'],
+            'is_featured' => ['nullable', 'boolean'],
+            'featured_order' => ['nullable', 'integer', 'min:0'],
             'image_url' => ['nullable', 'string', 'max:255'],
             'gradient' => ['nullable', 'string', 'max:255'],
         ]);
 
+        $data['is_featured'] = $request->boolean('is_featured');
+        if (($data['featured_order'] ?? null) === '') {
+            $data['featured_order'] = null;
+        }
         $data['booked'] = 0;
         Package::create($data);
 
@@ -69,10 +75,16 @@ class AdminPackageController extends Controller
             'location' => ['required', 'string', 'max:255'],
             'capacity' => ['required', 'integer', 'min:0'],
             'status' => ['required', 'in:active,draft,sold-out'],
+            'is_featured' => ['nullable', 'boolean'],
+            'featured_order' => ['nullable', 'integer', 'min:0'],
             'image_url' => ['nullable', 'string', 'max:255'],
             'gradient' => ['nullable', 'string', 'max:255'],
         ]);
 
+        $data['is_featured'] = $request->boolean('is_featured');
+        if (($data['featured_order'] ?? null) === '') {
+            $data['featured_order'] = null;
+        }
         $package->update($data);
 
         return redirect()->route('admin.packages')->with('success', 'Package updated.');

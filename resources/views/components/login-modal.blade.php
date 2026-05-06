@@ -68,5 +68,9 @@
             <span>New to TravelNest?</span>
             <button class="btn-login" type="button" data-register-open>Sign up</button>
         </div>
+        <div class="form-row" style="margin-top:0.5rem;">
+            <span>Are you an agency?</span>
+            <a class="btn-login" href="{{ route('agency.login') }}">Agency login</a>
+        </div>
     </div>
 </div>

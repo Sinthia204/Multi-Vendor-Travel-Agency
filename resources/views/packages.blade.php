@@ -5,13 +5,21 @@
 @section('content')
     <section class="page-hero">
         <div class="page-hero-bg">
-            <img src="{{ asset('images/dest_swiss_1775112801276.png') }}" alt="Mountain lake in the Swiss Alps">
+            @php
+                $heroImage = $pageHero?->background_image_url ?: 'images/dest_swiss_1775112801276.png';
+                if ($heroImage && !\Illuminate\Support\Str::startsWith($heroImage, ['http://', 'https://', '/'])) {
+                    $heroImage = \Illuminate\Support\Str::startsWith($heroImage, 'images/')
+                        ? asset($heroImage)
+                        : Storage::url($heroImage);
+                }
+            @endphp
+            <img src="{{ $heroImage }}" alt="Mountain lake in the Swiss Alps">
         </div>
         <div class="container">
             <div class="page-hero-content">
-                <span class="section-tag">Packages</span>
-                <h1 class="page-hero-title">Curated itineraries, zero planning stress.</h1>
-                <p class="page-hero-subtitle">Choose a ready-to-book package or let TravelNest personalize every detail for your travelers and budget.</p>
+                <span class="section-tag">{{ $pageHero?->badge ?? 'Packages' }}</span>
+                <h1 class="page-hero-title">{{ $pageHero?->title ?? 'Curated itineraries, zero planning stress.' }}</h1>
+                <p class="page-hero-subtitle">{{ $pageHero?->subtitle ?? 'Choose a ready-to-book package or let TravelNest personalize every detail for your travelers and budget.' }}</p>
             </div>
         </div>
     </section>
@@ -42,7 +50,11 @@
                 @forelse ($packages as $package)
                     @php
                         $image = $package->image_url ?: 'images/dest_maldives_1775112608148.png';
-                        $image = \Illuminate\Support\Str::startsWith($image, ['http://', 'https://', '/']) ? $image : asset($image);
+                        if ($image && !\Illuminate\Support\Str::startsWith($image, ['http://', 'https://', '/'])) {
+                            $image = \Illuminate\Support\Str::startsWith($image, 'images/')
+                                ? asset($image)
+                                : Storage::url($image);
+                        }
                     @endphp
                     <article class="dest-card">
                         <div class="dest-img-wrap">

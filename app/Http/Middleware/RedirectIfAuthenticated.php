@@ -21,6 +21,11 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
+                // Send agency users to their portal when already signed in.
+                if ($guard === 'agency') {
+                    return redirect()->route('agency.dashboard');
+                }
+
                 return redirect(RouteServiceProvider::HOME);
             }
         }

@@ -21,6 +21,8 @@ class Package extends Model
         'capacity',
         'booked',
         'status',
+        'is_featured',
+        'featured_order',
         'image_url',
         'gradient',
     ];
@@ -29,6 +31,8 @@ class Package extends Model
         'price' => 'decimal:2',
         'capacity' => 'integer',
         'booked' => 'integer',
+        'is_featured' => 'boolean',
+        'featured_order' => 'integer',
     ];
 
     public function agency(): BelongsTo

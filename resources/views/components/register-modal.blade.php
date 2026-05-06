@@ -60,5 +60,9 @@
             <span>Already have an account?</span>
             <button class="btn-login" type="button" data-login-open>Log in</button>
         </div>
+        <div class="form-row" style="margin-top:0.5rem;">
+            <span>Registering an agency?</span>
+            <a class="btn-login" href="{{ route('agency.register') }}">Agency signup</a>
+        </div>
     </div>
 </div>

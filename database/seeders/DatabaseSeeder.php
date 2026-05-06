@@ -9,9 +9,15 @@ use App\Models\Hotel;
 use App\Models\Transport;
 use App\Models\User;
 use Database\Seeders\AgencySeeder;
+use Database\Seeders\ExperienceSeeder;
+use Database\Seeders\HomeContentSeeder;
+use Database\Seeders\HotelSeeder;
+use Database\Seeders\PageHeroSeeder;
 use Database\Seeders\PackageSeeder;
+use Database\Seeders\StorySeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,6 +28,21 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(AgencySeeder::class);
         $this->call(PackageSeeder::class);
+        $this->call(HomeContentSeeder::class);
+        $this->call(ExperienceSeeder::class);
+        $this->call(StorySeeder::class);
+        $this->call(PageHeroSeeder::class);
+
+        $roles = [
+            'Admin',
+            'Service Provider',
+            'Customer',
+            'Technician',
+        ];
+
+        foreach ($roles as $roleName) {
+            Role::firstOrCreate(['name' => $roleName]);
+        }
 
         $admin = User::updateOrCreate(
             ['email' => 'admin@travelnest.test'],
@@ -33,15 +54,23 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        if (!$admin->hasRole('Admin')) {
+            $admin->assignRole('Admin');
+        }
+
         $user = User::updateOrCreate(
             ['email' => 'user@travelnest.test'],
             [
                 'name' => 'TravelNest User',
                 'password' => Hash::make('User@123'),
-                'role' => 'user',
+                'role' => 'customer',
                 'is_admin' => false,
             ]
         );
+
+        if (!$user->hasRole('Customer')) {
+            $user->assignRole('Customer');
+        }
 
         if (!Booking::query()->exists()) {
             Booking::factory()
@@ -73,6 +102,8 @@ class DatabaseSeeder extends Seeder
         if (!Hotel::query()->exists()) {
             Hotel::factory()->count(8)->create();
         }
+
+        $this->call(HotelSeeder::class);
 
         if (!Transport::query()->exists()) {
             Transport::factory()->count(8)->create();

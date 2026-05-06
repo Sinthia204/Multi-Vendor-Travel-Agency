@@ -8,112 +8,110 @@
 
 @section('content')
     {{-- Date range filter for report metrics and charts. --}}
-    <form class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4" method="GET"
-        action="{{ route('admin.reports') }}">
-        <div class="d-flex flex-wrap align-items-center gap-3">
-            <select class="tn-form-control" name="range" style="width:200px;">
+    <form class="reports-filters mb-4" method="GET" action="{{ route('admin.reports') }}">
+        <div class="reports-filter-item">
+            <select class="tn-form-control" name="range">
+                <option value="today" @selected($range === 'today')>Today</option>
+                <option value="week" @selected($range === 'week')>This week</option>
                 <option value="7d" @selected($range === '7d')>Last 7 days</option>
                 <option value="30d" @selected($range === '30d')>Last 30 days</option>
                 <option value="month" @selected($range === 'month')>This month</option>
+                <option value="year" @selected($range === 'year')>This year</option>
                 <option value="all" @selected($range === 'all')>All time</option>
+                <option value="custom" @selected($range === 'custom')>Custom range</option>
             </select>
-            {{-- Apply selected range. --}}
+        <div class="reports-filter-item">
+            <input type="date" name="from" value="{{ request('from') }}" class="tn-form-control" />
+        </div>
+        <div class="reports-filter-item">
+            <input type="date" name="to" value="{{ request('to') }}" class="tn-form-control" />
+        </div>
+        <div class="reports-filter-item reports-search">
+            <input type="text" name="q" value="{{ $q ?? '' }}" placeholder="Search (booking, txn, customer, agency, package)" class="tn-form-control" />
+        </div>
+        <div class="reports-filter-item">
             <button class="btn-outline-tn" type="submit">Apply</button>
             <a class="btn-outline-tn" href="{{ route('admin.reports') }}">Reset</a>
+            <a class="btn-outline-tn" href="{{ route('admin.reports', array_merge(request()->all(), ['export' => 'csv'])) }}">Export CSV</a>
         </div>
-        <div class="text-muted-tn" style="font-size:13px;">
-            Updated {{ now()->format('M d, Y H:i') }}
-        </div>
+        <div class="reports-filter-item text-muted-tn" style="font-size:13px;margin-left:auto;align-self:center;">Updated {{ now()->format('M d, Y H:i') }}</div>
     </form>
 
-    {{-- KPI cards for revenue, bookings, users, coupons, and inventory. --}}
-    <div class="row g-4 mb-4">
-        <div class="col-md-6 col-xl-3">
+    {{-- Summary cards --}}
+    <div class="summary-grid g-3 mb-4">
+        <div class="col-sm-6 col-lg-3">
             <div class="tn-card stat-card">
-                <div class="stat-card-top">
-                    <div class="stat-icon green">
-                        <i class="fas fa-dollar-sign"></i>
-                    </div>
-                </div>
-                <div class="stat-value">{{ number_format($revenue, 2) }} BDT</div>
-                <div class="stat-label">Revenue (successful)</div>
+                <div class="stat-value">{{ number_format($totalBookings) }}</div>
+                <div class="stat-label">Total bookings</div>
             </div>
         </div>
-        <div class="col-md-6 col-xl-3">
+        <div class="col-sm-6 col-lg-3">
             <div class="tn-card stat-card">
-                <div class="stat-card-top">
-                    <div class="stat-icon primary">
-                        <i class="fas fa-receipt"></i>
-                    </div>
-                </div>
+                <div class="stat-value">{{ number_format($pendingBookings) }}</div>
+                <div class="stat-label">Pending bookings</div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="tn-card stat-card">
+                <div class="stat-value">{{ number_format($confirmedBookings) }}</div>
+                <div class="stat-label">Confirmed bookings</div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="tn-card stat-card">
+                <div class="stat-value">{{ number_format($cancelledBookings) }}</div>
+                <div class="stat-label">Cancelled bookings</div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-3">
+            <div class="tn-card stat-card">
+                <div class="stat-value">{{ number_format($totalPayments) }}</div>
+                <div class="stat-label">Total payments</div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="tn-card stat-card">
                 <div class="stat-value">{{ number_format($successfulPayments) }}</div>
                 <div class="stat-label">Successful payments</div>
             </div>
         </div>
-        <div class="col-md-6 col-xl-3">
+        <div class="col-sm-6 col-lg-3">
             <div class="tn-card stat-card">
-                <div class="stat-card-top">
-                    <div class="stat-icon secondary">
-                        <i class="fas fa-calendar-check"></i>
-                    </div>
-                </div>
-                <div class="stat-value">{{ number_format($bookingsTotal) }}</div>
-                <div class="stat-label">Bookings (total)</div>
+                <div class="stat-value">{{ number_format($failedPayments) }}</div>
+                <div class="stat-label">Failed payments</div>
             </div>
         </div>
-        <div class="col-md-6 col-xl-3">
+        <div class="col-sm-6 col-lg-3">
             <div class="tn-card stat-card">
-                <div class="stat-card-top">
-                    <div class="stat-icon purple">
-                        <i class="fas fa-hourglass-half"></i>
-                    </div>
-                </div>
-                <div class="stat-value">{{ number_format($bookingsPending) }}</div>
-                <div class="stat-label">Bookings pending</div>
+                <div class="stat-value">{{ number_format($totalRevenue, 2) }} BDT</div>
+                <div class="stat-label">Total revenue</div>
             </div>
         </div>
-        <div class="col-md-6 col-xl-3">
+
+        <div class="col-sm-6 col-lg-3">
             <div class="tn-card stat-card">
-                <div class="stat-card-top">
-                    <div class="stat-icon primary">
-                        <i class="fas fa-users"></i>
-                    </div>
-                </div>
-                <div class="stat-value">{{ number_format($newUsers) }}</div>
-                <div class="stat-label">New users</div>
+                <div class="stat-value">{{ number_format($monthlyRevenue, 2) }} BDT</div>
+                <div class="stat-label">Monthly revenue</div>
             </div>
         </div>
-        <div class="col-md-6 col-xl-3">
+
+        <div class="col-sm-6 col-lg-3">
             <div class="tn-card stat-card">
-                <div class="stat-card-top">
-                    <div class="stat-icon secondary">
-                        <i class="fas fa-tags"></i>
-                    </div>
-                </div>
-                <div class="stat-value">{{ number_format($couponUsage) }}</div>
-                <div class="stat-label">Coupons used</div>
+                <div class="stat-value">{{ number_format($totalAgencies) }}</div>
+                <div class="stat-label">Total agencies</div>
             </div>
         </div>
-        <div class="col-md-6 col-xl-3">
+        <div class="col-sm-6 col-lg-3">
             <div class="tn-card stat-card">
-                <div class="stat-card-top">
-                    <div class="stat-icon green">
-                        <i class="fas fa-percentage"></i>
-                    </div>
-                </div>
-                <div class="stat-value">{{ number_format($discountTotal, 2) }} BDT</div>
-                <div class="stat-label">Discount total</div>
+                <div class="stat-value">{{ number_format($totalPackages) }}</div>
+                <div class="stat-label">Total packages</div>
             </div>
         </div>
-        <div class="col-md-6 col-xl-3">
+        <div class="col-sm-6 col-lg-3">
             <div class="tn-card stat-card">
-                <div class="stat-card-top">
-                    <div class="stat-icon purple">
-                        <i class="fas fa-warehouse"></i>
-                    </div>
-                </div>
-                <div class="stat-value">{{ number_format($hotelsCount + $transportCount) }}</div>
-                <div class="stat-label">Inventory items</div>
+                <div class="stat-value">{{ number_format($totalCustomers) }}</div>
+                <div class="stat-label">Total customers</div>
             </div>
         </div>
     </div>
@@ -172,80 +170,153 @@
             <div class="tn-card-static">
                 <div class="tn-card-header">
                     <h3 class="tn-card-header-title">Recent payments</h3>
-                    <a href="{{ route('admin.payments') }}" class="text-primary-tn"
-                        style="font-size:14px; font-weight:500;">View All -></a>
+                    <a href="{{ route('admin.payments') }}" class="text-primary-tn" style="font-size:14px; font-weight:500;">View All -></a>
                 </div>
-                <div style="overflow-x:auto;">
+                <div class="tn-table-wrap">
                     <table class="tn-table">
                         <thead>
                             <tr>
-                                <th>Transaction</th>
-                                <th>User</th>
+                                <th>Transaction ID</th>
+                                <th>Booking ID</th>
+                                <th>Customer Name</th>
+                                <th>Agency Name</th>
+                                <th>Package Name</th>
+                                <th>Payment Method</th>
                                 <th>Amount</th>
                                 <th>Status</th>
+                                <th>Payment Date</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($recentPayments as $payment)
                                 <tr>
                                     <td>{{ $payment->transaction_id }}</td>
-                                    <td>{{ $payment->user?->name ?? 'Unknown' }}</td>
-                                    <td>{{ number_format($payment->amount, 2) }} {{ $payment->currency }}</td>
+                                    <td>{{ $payment->booking?->booking_reference ?? '-' }}</td>
                                     <td>
-                                        <span
-                                            class="tn-badge tn-badge-{{ $payment->status === 'success' ? 'success' : ($payment->status === 'pending' ? 'warning' : 'danger') }}">
-                                            {{ ucfirst($payment->status) }}
-                                        </span>
+                                        @php
+                                            $bookingUser = $payment->booking?->user ?? null;
+                                            $paymentUser = $payment->user ?? null;
+                                            $showCustomer = null;
+
+                                            if ($bookingUser) {
+                                                // booking has an associated user (actual customer)
+                                                $showCustomer = $bookingUser;
+                                            } elseif ($paymentUser && !$paymentUser->is_admin) {
+                                                // show payment user only when not admin
+                                                $showCustomer = $paymentUser;
+                                            } elseif ($paymentUser && $paymentUser->is_admin && $payment->booking && $paymentUser->id === $payment->booking->user_id) {
+                                                // admin actually made the booking, show them
+                                                $showCustomer = $paymentUser;
+                                            }
+                                        @endphp
+                                        {{ $showCustomer?->name ?? 'Guest' }}
                                     </td>
+                                    <td>{{ $payment->booking?->package?->agency?->name ?? '-' }}</td>
+                                    <td>{{ $payment->booking?->package?->name ?? $payment->booking?->package_name ?? '-' }}</td>
+                                    <td>{{ $payment->payment_method ?? '-' }}</td>
+                                    <td>{{ number_format($payment->amount, 2) }} BDT</td>
+                                    <td>
+                                        @php
+                                            $status = strtolower($payment->status ?? 'pending');
+                                            $badge = match ($status) {
+                                                'pending' => 'warning',
+                                                'success', 'paid' => 'success',
+                                                'failed' => 'danger',
+                                                'refunded' => 'info',
+                                                default => 'secondary',
+                                            };
+                                        @endphp
+                                        <span class="tn-badge tn-badge-{{ $badge }}">{{ ucfirst($status) }}</span>
+                                    </td>
+                                    <td>{{ $payment->created_at?->format('M d, Y H:i') }}</td>
+                                    <td><a href="{{ route('admin.payments.show', $payment) }}" class="text-primary-tn">View</a></td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4">No payments yet.</td>
+                                    <td colspan="10">No payments found for this range.</td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
+                <div class="mt-3">{{ $recentPayments->links() }}</div>
             </div>
         </div>
         <div class="col-lg-6">
             <div class="tn-card-static">
                 <div class="tn-card-header">
                     <h3 class="tn-card-header-title">Recent bookings</h3>
-                    <a href="{{ url('/admin/bookings') }}" class="text-primary-tn"
-                        style="font-size:14px; font-weight:500;">View All -></a>
+                    <a href="{{ url('/admin/bookings') }}" class="text-primary-tn" style="font-size:14px; font-weight:500;">View All -></a>
                 </div>
-                <div style="overflow-x:auto;">
+                <div class="tn-table-wrap">
                     <table class="tn-table">
                         <thead>
                             <tr>
-                                <th>Booking</th>
-                                <th>User</th>
-                                <th>Amount</th>
-                                <th>Status</th>
+                                <th>Booking ID</th>
+                                <th>Customer</th>
+                                <th>Agency</th>
+                                <th>Package</th>
+                                <th>Travel Date</th>
+                                <th>Total Amount</th>
+                                <th>Booking Status</th>
+                                <th>Payment Status</th>
+                                <th>Booking Date</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($recentBookings as $booking)
                                 <tr>
                                     <td>{{ $booking->booking_reference }}</td>
-                                    <td>{{ $booking->user?->name ?? 'Unknown' }}</td>
-                                    <td>{{ number_format($booking->amount, 2) }} {{ $booking->currency }}</td>
+                                    <td>{{ $booking->user?->name ?? 'Guest' }}</td>
+                                    <td>{{ $booking->package?->agency?->name ?? $booking->agency?->name ?? '-' }}</td>
+                                    <td>{{ $booking->package?->name ?? $booking->package_name ?? '-' }}</td>
+                                    <td>{{ $booking->travel_date?->format('M d, Y') ?? '-' }}</td>
+                                    <td>{{ number_format($booking->amount, 2) }} BDT</td>
                                     <td>
-                                        <span
-                                            class="tn-badge tn-badge-{{ $booking->status === 'confirmed' ? 'success' : ($booking->status === 'pending' ? 'warning' : 'danger') }}">
-                                            {{ ucfirst($booking->status) }}
-                                        </span>
+                                        @php
+                                            $bstatus = strtolower($booking->status ?? 'pending');
+                                            $bbadge = match ($bstatus) {
+                                                'pending' => 'warning',
+                                                'confirmed' => 'success',
+                                                'completed' => 'success',
+                                                'cancelled' => 'danger',
+                                                default => 'secondary',
+                                            };
+                                        @endphp
+                                        <span class="tn-badge tn-badge-{{ $bbadge }}">{{ ucfirst($bstatus) }}</span>
                                     </td>
+                                    <td>
+                                        @php
+                                            $latestPayment = $booking->payments->sortByDesc('created_at')->first();
+                                            $pstatus = strtolower($latestPayment?->status ?? 'pending');
+                                            $pbadge = match ($pstatus) {
+                                                'pending' => 'warning',
+                                                'success', 'paid' => 'success',
+                                                'failed' => 'danger',
+                                                'refunded' => 'info',
+                                                default => 'secondary',
+                                            };
+                                        @endphp
+                                        @if($latestPayment)
+                                            <span class="tn-badge tn-badge-{{ $pbadge }}">{{ ucfirst($pstatus) }}</span>
+                                        @else
+                                            <span class="tn-badge tn-badge-warning">No payment</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $booking->created_at?->format('M d, Y H:i') }}</td>
+                                    <td><a href="{{ route('admin.bookings.show', $booking) }}" class="text-primary-tn">View</a></td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4">No bookings yet.</td>
+                                    <td colspan="10">No bookings found for this range.</td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
+                <div class="mt-3">{{ $recentBookings->links() }}</div>
             </div>
         </div>
     </div>

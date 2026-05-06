@@ -40,6 +40,10 @@ class AdminHotelController extends Controller
     {
         $data = $this->validateHotel($request);
         unset($data['image']);
+        $data['is_featured'] = $request->boolean('is_featured');
+        if (($data['featured_order'] ?? null) === '') {
+            $data['featured_order'] = null;
+        }
 
         $imagePath = $this->storeImage($request, 'hotels');
         if ($imagePath) {
@@ -61,6 +65,10 @@ class AdminHotelController extends Controller
     {
         $data = $this->validateHotel($request);
         unset($data['image']);
+        $data['is_featured'] = $request->boolean('is_featured');
+        if (($data['featured_order'] ?? null) === '') {
+            $data['featured_order'] = null;
+        }
 
         $imagePath = $this->storeImage($request, 'hotels');
         if ($imagePath) {
@@ -93,6 +101,8 @@ class AdminHotelController extends Controller
             'price_per_night' => ['required', 'numeric', 'min:0'],
             'rating' => ['nullable', 'numeric', 'min:0', 'max:5'],
             'status' => ['required', 'string', 'max:30'],
+            'is_featured' => ['nullable', 'boolean'],
+            'featured_order' => ['nullable', 'integer', 'min:0'],
             'image' => ['nullable', 'image', 'max:2048'],
             'description' => ['nullable', 'string'],
         ]);

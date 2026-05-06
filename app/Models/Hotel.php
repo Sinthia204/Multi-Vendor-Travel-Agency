@@ -17,6 +17,8 @@ class Hotel extends Model
         'price_per_night',
         'rating',
         'status',
+        'is_featured',
+        'featured_order',
         'image_url',
         'description',
     ];
@@ -24,5 +26,7 @@ class Hotel extends Model
     protected $casts = [
         'price_per_night' => 'decimal:2',
         'rating' => 'decimal:1',
+        'is_featured' => 'boolean',
+        'featured_order' => 'integer',
     ];
 }

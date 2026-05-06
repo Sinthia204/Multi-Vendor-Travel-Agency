@@ -5,13 +5,21 @@
 @section('content')
     <section class="page-hero">
         <div class="page-hero-bg">
-            <img src="{{ asset('images/dest_tokyo_1775112740002.png') }}" alt="Travelers exploring a vibrant city at night">
+            @php
+                $heroImage = $pageHero?->background_image_url ?: 'images/dest_tokyo_1775112740002.png';
+                if ($heroImage && !\Illuminate\Support\Str::startsWith($heroImage, ['http://', 'https://', '/'])) {
+                    $heroImage = \Illuminate\Support\Str::startsWith($heroImage, 'images/')
+                        ? asset($heroImage)
+                        : Storage::url($heroImage);
+                }
+            @endphp
+            <img src="{{ $heroImage }}" alt="Travelers exploring a vibrant city at night">
         </div>
         <div class="container">
             <div class="page-hero-content">
-                <span class="section-tag">Experiences</span>
-                <h1 class="page-hero-title">Moments curated by local insiders.</h1>
-                <p class="page-hero-subtitle">Choose immersive activities, luxury touches, and cultural discoveries created exclusively for TravelNest guests.</p>
+                <span class="section-tag">{{ $pageHero?->badge ?? 'Experiences' }}</span>
+                <h1 class="page-hero-title">{{ $pageHero?->title ?? 'Moments curated by local insiders.' }}</h1>
+                <p class="page-hero-subtitle">{{ $pageHero?->subtitle ?? 'Choose immersive activities, luxury touches, and cultural discoveries created exclusively for TravelNest guests.' }}</p>
             </div>
         </div>
     </section>
@@ -24,26 +32,18 @@
                 <p class="section-intro">Every experience includes a personal host, flexible scheduling, and concierge support.</p>
             </div>
             <div class="card-grid">
-                <div class="info-card">
-                    <span class="pill-tag"><i class="fa-solid fa-person-hiking"></i> Adventure</span>
-                    <h3>Summit hikes and coastal trails</h3>
-                    <p>Private guides, scenic routes, and curated picnic setups for every skill level.</p>
-                </div>
-                <div class="info-card">
-                    <span class="pill-tag"><i class="fa-solid fa-spa"></i> Wellness</span>
-                    <h3>Restorative retreats</h3>
-                    <p>Daily yoga sessions, spa rituals, and mindfulness moments by the sea.</p>
-                </div>
-                <div class="info-card">
-                    <span class="pill-tag"><i class="fa-solid fa-landmark"></i> Culture</span>
-                    <h3>Art, history, and heritage walks</h3>
-                    <p>Private museum access, artisan studios, and storytelling tours with locals.</p>
-                </div>
-                <div class="info-card">
-                    <span class="pill-tag"><i class="fa-solid fa-wine-glass"></i> Culinary</span>
-                    <h3>Chef-led tastings</h3>
-                    <p>Market visits, chef tables, and vineyard stays crafted for food lovers.</p>
-                </div>
+                @forelse ($experiences as $experience)
+                    <div class="info-card">
+                        <span class="pill-tag"><i class="{{ $experience->icon ?: 'fa-solid fa-compass' }}"></i> {{ $experience->title }}</span>
+                        <h3>{{ $experience->title }}</h3>
+                        <p>{{ $experience->description }}</p>
+                    </div>
+                @empty
+                    <div class="info-card">
+                        <h3>New experiences are on the way</h3>
+                        <p>We are curating the next set of TravelNest adventures.</p>
+                    </div>
+                @endforelse
             </div>
 
             <div class="cta-row">

@@ -98,7 +98,7 @@ class AdminAgencyController extends Controller
             'contact_person' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:agencies,email'],
             'phone' => ['required', 'string', 'max:50'],
-            'status' => ['required', 'in:pending,approved,suspended'],
+            'status' => ['required', 'in:pending,approved,rejected,suspended'],
             'registered_at' => ['nullable', 'date'],
         ]);
 
@@ -114,7 +114,7 @@ class AdminAgencyController extends Controller
             'contact_person' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:agencies,email,' . $agency->id],
             'phone' => ['required', 'string', 'max:50'],
-            'status' => ['required', 'in:pending,approved,suspended'],
+            'status' => ['required', 'in:pending,approved,rejected,suspended'],
             'registered_at' => ['nullable', 'date'],
         ]);
 
@@ -128,5 +128,28 @@ class AdminAgencyController extends Controller
         $agency->delete();
 
         return redirect()->route('admin.agencies')->with('success', 'Agency deleted.');
+    }
+
+    public function approve(Agency $agency)
+    {
+        // Approve the agency so they can log in and manage packages.
+        $agency->update([
+            'status' => 'approved',
+            'approved_at' => now(),
+            'rejected_at' => null,
+        ]);
+
+        return redirect()->route('admin.agencies')->with('success', 'Agency approved.');
+    }
+
+    public function reject(Agency $agency)
+    {
+        // Reject the agency registration request.
+        $agency->update([
+            'status' => 'rejected',
+            'rejected_at' => now(),
+        ]);
+
+        return redirect()->route('admin.agencies')->with('success', 'Agency rejected.');
     }
 }

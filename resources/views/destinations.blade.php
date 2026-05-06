@@ -5,13 +5,21 @@
 @section('content')
     <section class="page-hero">
         <div class="page-hero-bg">
-            <img src="{{ asset('images/dest_maldives_1775112608148.png') }}" alt="Turquoise lagoon in the Maldives">
+            @php
+                $heroImage = $pageHero?->background_image_url ?: 'images/dest_maldives_1775112608148.png';
+                if ($heroImage && !\Illuminate\Support\Str::startsWith($heroImage, ['http://', 'https://', '/'])) {
+                    $heroImage = \Illuminate\Support\Str::startsWith($heroImage, 'images/')
+                        ? asset($heroImage)
+                        : Storage::url($heroImage);
+                }
+            @endphp
+            <img src="{{ $heroImage }}" alt="Turquoise lagoon in the Maldives">
         </div>
         <div class="container">
             <div class="page-hero-content">
-                <span class="section-tag">Destinations</span>
-                <h1 class="page-hero-title">Discover places that match your pace.</h1>
-                <p class="page-hero-subtitle">From island hideaways to alpine wellness stays, TravelNest curates destinations that feel tailored to your travel style.</p>
+                <span class="section-tag">{{ $pageHero?->badge ?? 'Destinations' }}</span>
+                <h1 class="page-hero-title">{{ $pageHero?->title ?? 'Discover places that match your pace.' }}</h1>
+                <p class="page-hero-subtitle">{{ $pageHero?->subtitle ?? 'From island hideaways to alpine wellness stays, TravelNest curates destinations that feel tailored to your travel style.' }}</p>
             </div>
         </div>
     </section>
@@ -24,69 +32,44 @@
                 <p class="section-intro">Explore destinations chosen for their culture, scenery, and unforgettable hospitality. Every location includes handpicked stays and local hosts.</p>
             </div>
             <div class="destinations-grid">
-                <article class="dest-card">
-                    <div class="dest-img-wrap">
-                        <img src="{{ asset('images/dest_santorini_1775112332350.png') }}" alt="Santorini cliffside homes">
-                        <div class="dest-badge"><i class="fa-solid fa-star"></i> 4.9</div>
-                    </div>
-                    <div class="dest-info">
-                        <div class="dest-location"><i class="fa-solid fa-location-dot"></i> Santorini, Greece</div>
-                        <h3 class="dest-title">Cycladic Sunset Escape</h3>
-                        <p class="dest-price">Whitewashed villas, private yacht dinners, and seaside tasting menus.</p>
-                        <div class="dest-meta">
-                            <div class="dest-price">From <strong>$320</strong> / night</div>
-                            <a class="dest-btn" href="{{ route('packages') }}"><i class="fa-solid fa-arrow-right"></i></a>
+                @forelse ($hotels as $hotel)
+                    @php
+                        $imagePath = $hotel->image_url ?: 'images/dest_santorini_1775112332350.png';
+                        if ($imagePath && !\Illuminate\Support\Str::startsWith($imagePath, ['http://', 'https://', '/'])) {
+                            $imagePath = \Illuminate\Support\Str::startsWith($imagePath, 'images/')
+                                ? asset($imagePath)
+                                : Storage::url($imagePath);
+                        }
+                    @endphp
+                    <article class="dest-card">
+                        <div class="dest-img-wrap">
+                            <img src="{{ $imagePath }}" alt="{{ $hotel->name }}">
+                            @if ($hotel->rating)
+                                <div class="dest-badge"><i class="fa-solid fa-star"></i> {{ number_format($hotel->rating, 1) }}</div>
+                            @endif
                         </div>
+                        <div class="dest-info">
+                            <div class="dest-location"><i class="fa-solid fa-location-dot"></i> {{ $hotel->city }}, {{ $hotel->country }}</div>
+                            <h3 class="dest-title">{{ $hotel->name }}</h3>
+                            @if ($hotel->description)
+                                <p class="dest-price">{{ \Illuminate\Support\Str::limit($hotel->description, 100) }}</p>
+                            @endif
+                            <div class="dest-meta">
+                                <div class="dest-price">From <strong>${{ number_format($hotel->price_per_night, 0) }}</strong> / night</div>
+                                <a class="dest-btn" href="{{ route('packages') }}"><i class="fa-solid fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </article>
+                @empty
+                    <div class="info-card" style="grid-column:1 / -1; text-align:center;">
+                        <h3>No hotels found</h3>
+                        <p>Check back soon for new stays.</p>
                     </div>
-                </article>
+                @endforelse
+            </div>
 
-                <article class="dest-card">
-                    <div class="dest-img-wrap">
-                        <img src="{{ asset('images/dest_tokyo_1775112740002.png') }}" alt="Tokyo skyline at night">
-                        <div class="dest-badge"><i class="fa-solid fa-star"></i> 4.8</div>
-                    </div>
-                    <div class="dest-info">
-                        <div class="dest-location"><i class="fa-solid fa-location-dot"></i> Tokyo, Japan</div>
-                        <h3 class="dest-title">Neon District Discovery</h3>
-                        <p class="dest-price">Local guides, rooftop stays, and curated food trails.</p>
-                        <div class="dest-meta">
-                            <div class="dest-price">From <strong>$210</strong> / night</div>
-                            <a class="dest-btn" href="{{ route('packages') }}"><i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="dest-card">
-                    <div class="dest-img-wrap">
-                        <img src="{{ asset('images/dest_swiss_1775112801276.png') }}" alt="Swiss Alps with alpine lake">
-                        <div class="dest-badge"><i class="fa-solid fa-star"></i> 4.7</div>
-                    </div>
-                    <div class="dest-info">
-                        <div class="dest-location"><i class="fa-solid fa-location-dot"></i> Swiss Alps</div>
-                        <h3 class="dest-title">Alpine Wellness Lodge</h3>
-                        <p class="dest-price">Panoramic trails, spa rituals, and scenic rail journeys.</p>
-                        <div class="dest-meta">
-                            <div class="dest-price">From <strong>$260</strong> / night</div>
-                            <a class="dest-btn" href="{{ route('packages') }}"><i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="dest-card">
-                    <div class="dest-img-wrap">
-                        <img src="{{ asset('images/dest_machu_picchu_1775112348652.png') }}" alt="Machu Picchu ruins at dawn">
-                        <div class="dest-badge"><i class="fa-solid fa-star"></i> 4.8</div>
-                    </div>
-                    <div class="dest-info">
-                        <div class="dest-location"><i class="fa-solid fa-location-dot"></i> Peru</div>
-                        <h3 class="dest-title">Sacred Valley Immersion</h3>
-                        <p class="dest-price">Guided treks, boutique lodges, and private history walks.</p>
-                        <div class="dest-meta">
-                            <div class="dest-price">From <strong>$190</strong> / night</div>
-                            <a class="dest-btn" href="{{ route('packages') }}"><i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-                </article>
+            <div class="d-flex justify-content-end mt-4">
+                {{ $hotels->links('pagination::bootstrap-5') }}
             </div>
 
             <div class="cta-row">

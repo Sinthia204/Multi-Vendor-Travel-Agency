@@ -45,6 +45,18 @@
             @endforeach
         </select>
     </div>
+    <div class="col-md-4">
+        <label class="form-label">Featured Order</label>
+        <input type="number" name="featured_order" class="tn-form-control" min="0"
+            value="{{ old('featured_order', $hotel->featured_order ?? '') }}" placeholder="0">
+    </div>
+    <div class="col-md-4 d-flex align-items-center">
+        <div class="form-check form-switch mt-4">
+            <input class="form-check-input" type="checkbox" name="is_featured" value="1"
+                @checked(old('is_featured', $hotel->is_featured ?? false))>
+            <label class="form-label">Featured</label>
+        </div>
+    </div>
     <div class="col-md-8">
         {{-- Upload and preview the hotel image. --}}
         <label class="form-label">Hotel Image</label>

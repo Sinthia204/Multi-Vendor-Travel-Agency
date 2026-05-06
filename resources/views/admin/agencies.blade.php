@@ -20,6 +20,7 @@
                 <option value="all" @selected($statusFilter === 'all')>All Status</option>
                 <option value="pending" @selected($statusFilter === 'pending')>Pending</option>
                 <option value="approved" @selected($statusFilter === 'approved')>Approved</option>
+                <option value="rejected" @selected($statusFilter === 'rejected')>Rejected</option>
                 <option value="suspended" @selected($statusFilter === 'suspended')>Suspended</option>
             </select>
             <button class="btn-outline-tn" type="submit">Filter</button>
@@ -56,6 +57,11 @@
             data-status="suspended">
             Suspended <span class="pill-count">{{ $statusCounts->get('suspended', 0) }}</span>
         </a>
+        <a class="filter-pill {{ $statusFilter === 'rejected' ? 'active' : '' }}"
+            href="{{ route('admin.agencies', array_merge($statusBase, ['status' => 'rejected'])) }}"
+            data-status="rejected">
+            Rejected <span class="pill-count">{{ $statusCounts->get('rejected', 0) }}</span>
+        </a>
     </div>
 
     <!-- Mini stats for quick agency status overview. -->
@@ -85,6 +91,13 @@
                 <div class="mini-stat-value text-destructive" id="suspendedCount">
                     {{ $statusCounts->get('suspended', 0) }}</div>
                 <div class="mini-stat-label">Suspended</div>
+            </div>
+        </div>
+        <div class="mini-stat">
+            <div>
+                <div class="mini-stat-value text-destructive" id="rejectedCount">
+                    {{ $statusCounts->get('rejected', 0) }}</div>
+                <div class="mini-stat-label">Rejected</div>
             </div>
         </div>
     </div>
@@ -145,21 +158,58 @@
                                         <li><a class="dropdown-item" href="#" data-action="edit"><i
                                                     class="fas fa-edit me-2"></i>Edit</a></li>
                                         <li>
-                                            <form method="POST" action="{{ route('admin.agencies.update', $agency) }}">
-                                                @csrf
-                                                @method('PUT')
-                                                <input type="hidden" name="name" value="{{ $agency->name }}">
-                                                <input type="hidden" name="contact_person" value="{{ $agency->contact_person }}">
-                                                <input type="hidden" name="email" value="{{ $agency->email }}">
-                                                <input type="hidden" name="phone" value="{{ $agency->phone }}">
-                                                <input type="hidden" name="registered_at" value="{{ optional($agency->registered_at)->format('Y-m-d') }}">
-                                                <input type="hidden" name="status"
-                                                    value="{{ $agency->status === 'approved' ? 'suspended' : 'approved' }}">
-                                                <button class="dropdown-item" type="submit">
-                                                    <i class="fas fa-ban me-2"></i>
-                                                    {{ $agency->status === 'approved' ? 'Suspend' : 'Approve' }}
-                                                </button>
-                                            </form>
+                                            @if ($agency->status === 'pending')
+                                                <form method="POST" action="{{ route('admin.agencies.approve', $agency) }}">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button class="dropdown-item" type="submit">
+                                                        <i class="fas fa-check me-2"></i>Approve
+                                                    </button>
+                                                </form>
+                                                <form method="POST" action="{{ route('admin.agencies.reject', $agency) }}">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button class="dropdown-item" type="submit">
+                                                        <i class="fas fa-xmark me-2"></i>Reject
+                                                    </button>
+                                                </form>
+                                            @elseif ($agency->status === 'approved')
+                                                <form method="POST" action="{{ route('admin.agencies.update', $agency) }}">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <input type="hidden" name="name" value="{{ $agency->name }}">
+                                                    <input type="hidden" name="contact_person" value="{{ $agency->contact_person }}">
+                                                    <input type="hidden" name="email" value="{{ $agency->email }}">
+                                                    <input type="hidden" name="phone" value="{{ $agency->phone }}">
+                                                    <input type="hidden" name="registered_at" value="{{ optional($agency->registered_at)->format('Y-m-d') }}">
+                                                    <input type="hidden" name="status" value="suspended">
+                                                    <button class="dropdown-item" type="submit">
+                                                        <i class="fas fa-ban me-2"></i>Suspend
+                                                    </button>
+                                                </form>
+                                            @elseif ($agency->status === 'rejected')
+                                                <form method="POST" action="{{ route('admin.agencies.approve', $agency) }}">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button class="dropdown-item" type="submit">
+                                                        <i class="fas fa-check me-2"></i>Approve
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <form method="POST" action="{{ route('admin.agencies.update', $agency) }}">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <input type="hidden" name="name" value="{{ $agency->name }}">
+                                                    <input type="hidden" name="contact_person" value="{{ $agency->contact_person }}">
+                                                    <input type="hidden" name="email" value="{{ $agency->email }}">
+                                                    <input type="hidden" name="phone" value="{{ $agency->phone }}">
+                                                    <input type="hidden" name="registered_at" value="{{ optional($agency->registered_at)->format('Y-m-d') }}">
+                                                    <input type="hidden" name="status" value="approved">
+                                                    <button class="dropdown-item" type="submit">
+                                                        <i class="fas fa-check me-2"></i>Approve
+                                                    </button>
+                                                </form>
+                                            @endif
                                         </li>
                                         <li>
                                             <hr class="dropdown-divider">

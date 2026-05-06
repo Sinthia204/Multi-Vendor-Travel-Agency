@@ -46,7 +46,9 @@
                     data-duration="{{ $package->duration }}" data-location="{{ $package->location }}"
                     data-capacity="{{ $package->capacity }}" data-booked="{{ $package->booked }}"
                     data-status="{{ $package->status }}" data-image="{{ $image }}"
-                    data-gradient="{{ $gradient }}" data-update-url="{{ route('admin.packages.update', $package) }}">
+                    data-gradient="{{ $gradient }}" data-featured="{{ $package->is_featured ? '1' : '0' }}"
+                    data-featured-order="{{ $package->featured_order ?? '' }}"
+                    data-update-url="{{ route('admin.packages.update', $package) }}">
                     <div class="package-card-image" style="background:{{ $gradient }};">
                         <img class="package-card-cover" src="{{ $image }}" alt="{{ $package->name }}">
                         <span class="package-card-category">{{ ucfirst($package->category) }}</span>
@@ -177,6 +179,18 @@
                                     <option value="sold-out">Sold Out</option>
                                 </select>
                             </div>
+                            <div class="col-md-3">
+                                <label class="tn-form-label" for="packageFeaturedOrder">Featured Order</label>
+                                <input class="tn-form-control" id="packageFeaturedOrder" name="featured_order"
+                                    type="number" min="0" placeholder="0">
+                            </div>
+                            <div class="col-md-3 d-flex align-items-center">
+                                <div class="form-check form-switch mt-4">
+                                    <input class="form-check-input" type="checkbox" id="packageFeatured"
+                                        name="is_featured" value="1">
+                                    <label class="form-label" for="packageFeatured">Featured</label>
+                                </div>
+                            </div>
                             <div class="col-12">
                                 <label class="tn-form-label" for="packageImage">Cover Image URL</label>
                                 <input class="tn-form-control" id="packageImage" name="image_url" type="text"
@@ -213,6 +227,8 @@
                 form.reset();
                 document.getElementById('packageCategoryInput').value = 'beach';
                 document.getElementById('packageStatus').value = 'active';
+                document.getElementById('packageFeaturedOrder').value = '';
+                document.getElementById('packageFeatured').checked = false;
             };
 
             if (addButton) {
@@ -240,6 +256,8 @@
                     document.getElementById('packageStatus').value = card.dataset.status || 'active';
                     document.getElementById('packageImage').value = card.dataset.image || '';
                     document.getElementById('packageGradient').value = card.dataset.gradient || '';
+                    document.getElementById('packageFeaturedOrder').value = card.dataset.featuredOrder || '';
+                    document.getElementById('packageFeatured').checked = card.dataset.featured === '1';
                     const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('packageFormModal'));
                     modal.show();
                 });
