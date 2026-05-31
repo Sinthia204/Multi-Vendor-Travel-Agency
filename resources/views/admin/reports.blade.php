@@ -7,167 +7,165 @@
 @section('page-title', 'Reports')
 
 @section('content')
-    {{-- Date range filter for report metrics and charts. --}}
-    <form class="reports-filters mb-4" method="GET" action="{{ route('admin.reports') }}">
-        <div class="reports-filter-item">
-            <select class="tn-form-control" name="range">
-                <option value="today" @selected($range === 'today')>Today</option>
-                <option value="week" @selected($range === 'week')>This week</option>
-                <option value="7d" @selected($range === '7d')>Last 7 days</option>
-                <option value="30d" @selected($range === '30d')>Last 30 days</option>
-                <option value="month" @selected($range === 'month')>This month</option>
-                <option value="year" @selected($range === 'year')>This year</option>
-                <option value="all" @selected($range === 'all')>All time</option>
-                <option value="custom" @selected($range === 'custom')>Custom range</option>
-            </select>
-        <div class="reports-filter-item">
-            <input type="date" name="from" value="{{ request('from') }}" class="tn-form-control" />
-        </div>
-        <div class="reports-filter-item">
-            <input type="date" name="to" value="{{ request('to') }}" class="tn-form-control" />
-        </div>
-        <div class="reports-filter-item reports-search">
-            <input type="text" name="q" value="{{ $q ?? '' }}" placeholder="Search (booking, txn, customer, agency, package)" class="tn-form-control" />
-        </div>
-        <div class="reports-filter-item">
-            <button class="btn-outline-tn" type="submit">Apply</button>
-            <a class="btn-outline-tn" href="{{ route('admin.reports') }}">Reset</a>
-            <a class="btn-outline-tn" href="{{ route('admin.reports', array_merge(request()->all(), ['export' => 'csv'])) }}">Export CSV</a>
-        </div>
-        <div class="reports-filter-item text-muted-tn" style="font-size:13px;margin-left:auto;align-self:center;">Updated {{ now()->format('M d, Y H:i') }}</div>
-    </form>
-
-    {{-- Summary cards --}}
-    <div class="summary-grid g-3 mb-4">
-        <div class="col-sm-6 col-lg-3">
-            <div class="tn-card stat-card">
-                <div class="stat-value">{{ number_format($totalBookings) }}</div>
-                <div class="stat-label">Total bookings</div>
+    <div class="reports-shell">
+        <div class="reports-section">
+            <div class="reports-section-header">
+                <div>
+                    <h3 class="reports-title">Filters</h3>
+                    <p class="reports-subtitle">Refine results by date and keyword.</p>
+                </div>
+                <div class="reports-updated text-muted-tn">Updated {{ now()->format('M d, Y H:i') }}</div>
             </div>
-        </div>
-        <div class="col-sm-6 col-lg-3">
-            <div class="tn-card stat-card">
-                <div class="stat-value">{{ number_format($pendingBookings) }}</div>
-                <div class="stat-label">Pending bookings</div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-lg-3">
-            <div class="tn-card stat-card">
-                <div class="stat-value">{{ number_format($confirmedBookings) }}</div>
-                <div class="stat-label">Confirmed bookings</div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-lg-3">
-            <div class="tn-card stat-card">
-                <div class="stat-value">{{ number_format($cancelledBookings) }}</div>
-                <div class="stat-label">Cancelled bookings</div>
-            </div>
+            <form class="reports-controls" method="GET" action="{{ route('admin.reports') }}">
+                <div class="reports-controls-row">
+                    <div class="reports-filter-item">
+                        <select class="tn-form-control" name="range">
+                            <option value="today" @selected($range === 'today')>Today</option>
+                            <option value="week" @selected($range === 'week')>This week</option>
+                            <option value="7d" @selected($range === '7d')>Last 7 days</option>
+                            <option value="30d" @selected($range === '30d')>Last 30 days</option>
+                            <option value="month" @selected($range === 'month')>This month</option>
+                            <option value="year" @selected($range === 'year')>This year</option>
+                            <option value="all" @selected($range === 'all')>All time</option>
+                            <option value="custom" @selected($range === 'custom')>Custom range</option>
+                        </select>
+                    </div>
+                    <div class="reports-filter-item">
+                        <input type="date" name="from" value="{{ request('from') }}" class="tn-form-control" />
+                    </div>
+                    <div class="reports-filter-item">
+                        <input type="date" name="to" value="{{ request('to') }}" class="tn-form-control" />
+                    </div>
+                </div>
+                <div class="reports-controls-row">
+                    <div class="reports-filter-item reports-search">
+                        <input type="text" name="q" value="{{ $q ?? '' }}" placeholder="Search (booking, txn, customer, agency, package)" class="tn-form-control" />
+                    </div>
+                    <div class="reports-filter-item reports-actions">
+                        <button class="btn-outline-tn" type="submit">Apply</button>
+                        <a class="btn-outline-tn" href="{{ route('admin.reports') }}">Reset</a>
+                        <a class="btn-outline-tn" href="{{ route('admin.reports', array_merge(request()->all(), ['export' => 'csv'])) }}">Export CSV</a>
+                    </div>
+                </div>
+            </form>
         </div>
 
-        <div class="col-sm-6 col-lg-3">
-            <div class="tn-card stat-card">
-                <div class="stat-value">{{ number_format($totalPayments) }}</div>
-                <div class="stat-label">Total payments</div>
+        <div class="reports-section">
+            <div class="reports-section-header">
+                <div>
+                    <h3 class="reports-title">Overview</h3>
+                    <p class="reports-subtitle">Bookings, payments, and revenue snapshot.</p>
+                </div>
             </div>
-        </div>
-        <div class="col-sm-6 col-lg-3">
-            <div class="tn-card stat-card">
-                <div class="stat-value">{{ number_format($successfulPayments) }}</div>
-                <div class="stat-label">Successful payments</div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-lg-3">
-            <div class="tn-card stat-card">
-                <div class="stat-value">{{ number_format($failedPayments) }}</div>
-                <div class="stat-label">Failed payments</div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-lg-3">
-            <div class="tn-card stat-card">
-                <div class="stat-value">{{ number_format($totalRevenue, 2) }} BDT</div>
-                <div class="stat-label">Total revenue</div>
+            <div class="reports-kpi-grid">
+                <div class="tn-card stat-card">
+                    <div class="stat-value">{{ number_format($totalBookings) }}</div>
+                    <div class="stat-label">Total bookings</div>
+                </div>
+                <div class="tn-card stat-card">
+                    <div class="stat-value">{{ number_format($pendingBookings) }}</div>
+                    <div class="stat-label">Pending bookings</div>
+                </div>
+                <div class="tn-card stat-card">
+                    <div class="stat-value">{{ number_format($confirmedBookings) }}</div>
+                    <div class="stat-label">Confirmed bookings</div>
+                </div>
+                <div class="tn-card stat-card">
+                    <div class="stat-value">{{ number_format($cancelledBookings) }}</div>
+                    <div class="stat-label">Cancelled bookings</div>
+                </div>
+                <div class="tn-card stat-card">
+                    <div class="stat-value">{{ number_format($totalPayments) }}</div>
+                    <div class="stat-label">Total payments</div>
+                </div>
+                <div class="tn-card stat-card">
+                    <div class="stat-value">{{ number_format($successfulPayments) }}</div>
+                    <div class="stat-label">Successful payments</div>
+                </div>
+                <div class="tn-card stat-card">
+                    <div class="stat-value">{{ number_format($failedPayments) }}</div>
+                    <div class="stat-label">Failed payments</div>
+                </div>
+                <div class="tn-card stat-card">
+                    <div class="stat-value">{{ number_format($totalRevenue, 2) }} BDT</div>
+                    <div class="stat-label">Total revenue</div>
+                </div>
+                <div class="tn-card stat-card">
+                    <div class="stat-value">{{ number_format($monthlyRevenue, 2) }} BDT</div>
+                    <div class="stat-label">Monthly revenue</div>
+                </div>
+                <div class="tn-card stat-card">
+                    <div class="stat-value">{{ number_format($totalAgencies) }}</div>
+                    <div class="stat-label">Total agencies</div>
+                </div>
+                <div class="tn-card stat-card">
+                    <div class="stat-value">{{ number_format($totalPackages) }}</div>
+                    <div class="stat-label">Total packages</div>
+                </div>
+                <div class="tn-card stat-card">
+                    <div class="stat-value">{{ number_format($totalCustomers) }}</div>
+                    <div class="stat-label">Total customers</div>
+                </div>
             </div>
         </div>
 
-        <div class="col-sm-6 col-lg-3">
-            <div class="tn-card stat-card">
-                <div class="stat-value">{{ number_format($monthlyRevenue, 2) }} BDT</div>
-                <div class="stat-label">Monthly revenue</div>
+        <div class="reports-section">
+            <div class="reports-section-header">
+                <div>
+                    <h3 class="reports-title">Trends</h3>
+                    <p class="reports-subtitle">Performance trends and distribution.</p>
+                </div>
+            </div>
+            <div class="reports-charts-grid">
+                <div class="tn-card-static">
+                    <div class="chart-card-header">
+                        <h3 class="chart-card-title">Revenue trend</h3>
+                        <p class="chart-card-subtitle">Successful payments</p>
+                    </div>
+                    <div class="chart-area">
+                        <canvas id="revenueTrendChart"></canvas>
+                    </div>
+                </div>
+                <div class="tn-card-static">
+                    <div class="chart-card-header">
+                        <h3 class="chart-card-title">Booking trend</h3>
+                        <p class="chart-card-subtitle">All bookings created</p>
+                    </div>
+                    <div class="chart-area">
+                        <canvas id="bookingTrendChart"></canvas>
+                    </div>
+                </div>
+                <div class="tn-card-static">
+                    <div class="chart-card-header">
+                        <h3 class="chart-card-title">Payment methods</h3>
+                        <p class="chart-card-subtitle">Successful payments by method</p>
+                    </div>
+                    <div class="chart-area">
+                        <canvas id="paymentMethodChart"></canvas>
+                    </div>
+                </div>
+                <div class="tn-card-static">
+                    <div class="chart-card-header">
+                        <h3 class="chart-card-title">Booking status</h3>
+                        <p class="chart-card-subtitle">Status distribution</p>
+                    </div>
+                    <div class="chart-area">
+                        <canvas id="bookingStatusChart"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="col-sm-6 col-lg-3">
-            <div class="tn-card stat-card">
-                <div class="stat-value">{{ number_format($totalAgencies) }}</div>
-                <div class="stat-label">Total agencies</div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-lg-3">
-            <div class="tn-card stat-card">
-                <div class="stat-value">{{ number_format($totalPackages) }}</div>
-                <div class="stat-label">Total packages</div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-lg-3">
-            <div class="tn-card stat-card">
-                <div class="stat-value">{{ number_format($totalCustomers) }}</div>
-                <div class="stat-label">Total customers</div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Charts for trend and distribution snapshots. --}}
-    <div class="row g-4 mb-4">
-        <div class="col-lg-6">
-            <div class="tn-card-static">
-                <div class="chart-card-header">
-                    <h3 class="chart-card-title">Revenue trend</h3>
-                    <p class="chart-card-subtitle">Successful payments</p>
-                </div>
-                <div class="chart-area">
-                    <canvas id="revenueTrendChart"></canvas>
+        <div class="reports-section">
+            <div class="reports-section-header">
+                <div>
+                    <h3 class="reports-title">Recent activity</h3>
+                    <p class="reports-subtitle">Latest payments and bookings.</p>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="tn-card-static">
-                <div class="chart-card-header">
-                    <h3 class="chart-card-title">Booking trend</h3>
-                    <p class="chart-card-subtitle">All bookings created</p>
-                </div>
-                <div class="chart-area">
-                    <canvas id="bookingTrendChart"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="tn-card-static">
-                <div class="chart-card-header">
-                    <h3 class="chart-card-title">Payment methods</h3>
-                    <p class="chart-card-subtitle">Successful payments by method</p>
-                </div>
-                <div class="chart-area">
-                    <canvas id="paymentMethodChart"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="tn-card-static">
-                <div class="chart-card-header">
-                    <h3 class="chart-card-title">Booking status</h3>
-                    <p class="chart-card-subtitle">Status distribution</p>
-                </div>
-                <div class="chart-area">
-                    <canvas id="bookingStatusChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Recent activity tables for payments and bookings. --}}
-    <div class="row g-4">
-        <div class="col-lg-6">
-            <div class="tn-card-static">
+            <div class="reports-activity">
+                <div class="reports-activity-col">
+                    <div class="tn-card-static">
                 <div class="tn-card-header">
                     <h3 class="tn-card-header-title">Recent payments</h3>
                     <a href="{{ route('admin.payments') }}" class="text-primary-tn" style="font-size:14px; font-weight:500;">View All -></a>
@@ -191,8 +189,12 @@
                         <tbody>
                             @forelse ($recentPayments as $payment)
                                 <tr>
-                                    <td>{{ $payment->transaction_id }}</td>
-                                    <td>{{ $payment->booking?->booking_reference ?? '-' }}</td>
+                                    <td>
+                                        <span class="tn-ellipsis" title="{{ $payment->transaction_id }}">
+                                            {{ $payment->transaction_id ? \Illuminate\Support\Str::substr($payment->transaction_id, -4) : '-' }}
+                                        </span>
+                                    </td>
+                                    <td><span class="tn-ellipsis" title="{{ $payment->booking?->booking_reference ?? '-' }}">{{ $payment->booking?->booking_reference ?? '-' }}</span></td>
                                     <td>
                                         @php
                                             $bookingUser = $payment->booking?->user ?? null;
@@ -212,9 +214,9 @@
                                         @endphp
                                         {{ $showCustomer?->name ?? 'Guest' }}
                                     </td>
-                                    <td>{{ $payment->booking?->package?->agency?->name ?? '-' }}</td>
-                                    <td>{{ $payment->booking?->package?->name ?? $payment->booking?->package_name ?? '-' }}</td>
-                                    <td>{{ $payment->payment_method ?? '-' }}</td>
+                                    <td><span class="tn-ellipsis" title="{{ $payment->booking?->package?->agency?->name ?? '-' }}">{{ $payment->booking?->package?->agency?->name ?? '-' }}</span></td>
+                                    <td><span class="tn-ellipsis" title="{{ $payment->booking?->package?->name ?? $payment->booking?->package_name ?? '-' }}">{{ $payment->booking?->package?->name ?? $payment->booking?->package_name ?? '-' }}</span></td>
+                                    <td><span class="tn-ellipsis" title="{{ $payment->payment_method ?? '-' }}">{{ $payment->payment_method ?? '-' }}</span></td>
                                     <td>{{ number_format($payment->amount, 2) }} BDT</td>
                                     <td>
                                         @php
@@ -241,10 +243,10 @@
                     </table>
                 </div>
                 <div class="mt-3">{{ $recentPayments->links() }}</div>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="tn-card-static">
+                    </div>
+                </div>
+                <div class="reports-activity-col">
+                    <div class="tn-card-static">
                 <div class="tn-card-header">
                     <h3 class="tn-card-header-title">Recent bookings</h3>
                     <a href="{{ url('/admin/bookings') }}" class="text-primary-tn" style="font-size:14px; font-weight:500;">View All -></a>
@@ -268,10 +270,10 @@
                         <tbody>
                             @forelse ($recentBookings as $booking)
                                 <tr>
-                                    <td>{{ $booking->booking_reference }}</td>
-                                    <td>{{ $booking->user?->name ?? 'Guest' }}</td>
-                                    <td>{{ $booking->package?->agency?->name ?? $booking->agency?->name ?? '-' }}</td>
-                                    <td>{{ $booking->package?->name ?? $booking->package_name ?? '-' }}</td>
+                                    <td><span class="tn-ellipsis" title="{{ $booking->booking_reference }}">{{ $booking->booking_reference }}</span></td>
+                                    <td><span class="tn-ellipsis" title="{{ $booking->user?->name ?? 'Guest' }}">{{ $booking->user?->name ?? 'Guest' }}</span></td>
+                                    <td><span class="tn-ellipsis" title="{{ $booking->package?->agency?->name ?? $booking->agency?->name ?? '-' }}">{{ $booking->package?->agency?->name ?? $booking->agency?->name ?? '-' }}</span></td>
+                                    <td><span class="tn-ellipsis" title="{{ $booking->package?->name ?? $booking->package_name ?? '-' }}">{{ $booking->package?->name ?? $booking->package_name ?? '-' }}</span></td>
                                     <td>{{ $booking->travel_date?->format('M d, Y') ?? '-' }}</td>
                                     <td>{{ number_format($booking->amount, 2) }} BDT</td>
                                     <td>
@@ -317,6 +319,9 @@
                     </table>
                 </div>
                 <div class="mt-3">{{ $recentBookings->links() }}</div>
+            </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

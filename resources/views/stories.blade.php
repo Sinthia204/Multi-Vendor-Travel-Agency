@@ -15,7 +15,7 @@
             @endphp
             <img src="{{ $heroImage }}" alt="Travelers overlooking the sea in Santorini">
         </div>
-        <div class="container">
+<div class="container">
             <div class="page-hero-content">
                 <span class="section-tag">{{ $pageHero?->badge ?? 'Stories' }}</span>
                 <h1 class="page-hero-title">{{ $pageHero?->title ?? 'Real journeys, memorable details.' }}</h1>

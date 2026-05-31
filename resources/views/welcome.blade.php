@@ -17,14 +17,14 @@
                         <i class="fa-solid fa-location-dot"></i>
                         <div class="search-input">
                             <label for="destination">Destination</label>
-                            <input id="destination" name="destination" type="text" placeholder="Bali, Santorini, Kyoto">
+                            <input id="destination" name="destination" type="text" placeholder="Saint Martin,Bangladesh">
                         </div>
                     </div>
                     <div class="search-field search-field-dates">
                         <i class="fa-regular fa-calendar"></i>
                         <div class="search-input">
                             <label for="dates">Dates</label>
-                            <input id="dates" name="dates" type="text" placeholder="Aug 12 - Aug 20">
+                            <input id="dates" name="dates" type="text" placeholder="Oct 3-Oct 4">
                         </div>
                     </div>
                     <div class="search-field">
@@ -93,7 +93,11 @@
                                 @csrf
                                 <input type="hidden" name="package_name" value="{{ $package['name'] }}">
                                 <input type="hidden" name="amount" value="{{ $package['price'] }}">
-                                <input type="date" name="travel_date" class="package-input">
+                                {{-- Travel date must be today or in future --}}
+                                <input type="date" name="travel_date" class="package-input" min="{{ now()->format('Y-m-d') }}" required>
+                                @error('travel_date')
+                                    <div style="color: #e74c3c; font-size: 0.85rem; margin-top: 0.25rem;">{{ $message }}</div>
+                                @enderror
                                 <input type="text" name="coupon_code" class="package-input" placeholder="Coupon code">
                                 <button type="submit" class="btn-primary">Book Now</button>
                             </form>

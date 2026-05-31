@@ -16,13 +16,20 @@ class BookingController extends Controller
             'package_id' => ['nullable', 'integer', 'exists:packages,id'],
             'package_name' => ['required', 'string', 'max:255'],
             'amount' => ['required', 'numeric', 'min:0'],
-            'travel_date' => ['nullable', 'date'],
+            'travel_date' => ['nullable', 'date', 'after_or_equal:today'],  // Travel date must be today or in future
             'coupon_code' => ['nullable', 'string', 'max:50'],
         ]);
 
         $package = null;
         if (!empty($data['package_id'])) {
             $package = Package::with('agency')->find($data['package_id']);
+        }
+
+        // Check if agency is approved - prevent bookings from pending/rejected agencies
+        if ($package && $package->agency && $package->agency->status !== 'approved') {
+            return back()->withErrors([
+                'booking' => 'This agency is not currently accepting bookings. Please contact support.'
+            ])->withInput();
         }
 
         $amount = $package?->price ?? $data['amount'];

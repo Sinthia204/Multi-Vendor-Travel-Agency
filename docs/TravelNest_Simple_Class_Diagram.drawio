@@ -1,0 +1,75 @@
+<mxfile host="app.diagrams.net" modified="2026-05-08T00:00:00.000Z" agent="Codex" version="24.7.17" type="device">
+  <diagram id="travelnest-simple-class" name="Simple Class Diagram">
+    <mxGraphModel dx="1200" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title" value="TravelNest - Simple Class Diagram" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=24;fontStyle=1;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="330" y="25" width="540" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="note" value="Short project overview: user books agency packages and completes payment." style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=13;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="330" y="65" width="540" height="25" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="user" value="&lt;b&gt;User&lt;/b&gt;&lt;hr&gt;- id&lt;br&gt;- name&lt;br&gt;- email&lt;br&gt;- role&lt;br&gt;- status&lt;hr&gt;+ bookings()" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fontSize=13;strokeColor=#222222;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="80" y="140" width="190" height="150" as="geometry"/>
+        </mxCell>
+        <mxCell id="agency" value="&lt;b&gt;Agency&lt;/b&gt;&lt;hr&gt;- id&lt;br&gt;- name&lt;br&gt;- email&lt;br&gt;- phone&lt;br&gt;- status&lt;hr&gt;+ packages()&lt;br&gt;+ bookings()" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fontSize=13;strokeColor=#222222;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="910" y="140" width="200" height="170" as="geometry"/>
+        </mxCell>
+        <mxCell id="package" value="&lt;b&gt;Package&lt;/b&gt;&lt;hr&gt;- id&lt;br&gt;- agency_id&lt;br&gt;- name&lt;br&gt;- category&lt;br&gt;- price&lt;br&gt;- duration&lt;br&gt;- capacity&lt;br&gt;- status&lt;hr&gt;+ agency()&lt;br&gt;+ bookings()" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fontSize=13;strokeColor=#222222;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="500" y="125" width="210" height="220" as="geometry"/>
+        </mxCell>
+        <mxCell id="booking" value="&lt;b&gt;Booking&lt;/b&gt;&lt;hr&gt;- id&lt;br&gt;- user_id&lt;br&gt;- agency_id&lt;br&gt;- package_id&lt;br&gt;- booking_reference&lt;br&gt;- travel_date&lt;br&gt;- amount&lt;br&gt;- status&lt;hr&gt;+ user()&lt;br&gt;+ agency()&lt;br&gt;+ package()&lt;br&gt;+ payments()" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fontSize=13;strokeColor=#222222;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="475" y="430" width="250" height="260" as="geometry"/>
+        </mxCell>
+        <mxCell id="payment" value="&lt;b&gt;Payment&lt;/b&gt;&lt;hr&gt;- id&lt;br&gt;- user_id&lt;br&gt;- booking_id&lt;br&gt;- amount&lt;br&gt;- payment_method&lt;br&gt;- transaction_id&lt;br&gt;- status&lt;hr&gt;+ user()&lt;br&gt;+ booking()&lt;br&gt;+ logs()" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fontSize=13;strokeColor=#222222;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="80" y="500" width="220" height="220" as="geometry"/>
+        </mxCell>
+        <mxCell id="paymentlog" value="&lt;b&gt;PaymentLog&lt;/b&gt;&lt;hr&gt;- id&lt;br&gt;- payment_id&lt;br&gt;- type&lt;br&gt;- direction&lt;br&gt;- payload" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fontSize=13;strokeColor=#222222;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="80" y="760" width="220" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="coupon" value="&lt;b&gt;Coupon&lt;/b&gt;&lt;hr&gt;- id&lt;br&gt;- code&lt;br&gt;- type&lt;br&gt;- value&lt;br&gt;- active&lt;br&gt;- expires_at" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fontSize=13;strokeColor=#222222;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="910" y="500" width="200" height="155" as="geometry"/>
+        </mxCell>
+        <mxCell id="content" value="&lt;b&gt;Travel Content&lt;/b&gt;&lt;hr&gt;Hotel&lt;br&gt;Transport&lt;br&gt;Experience&lt;br&gt;Story&lt;br&gt;PageHero&lt;br&gt;HomeContent&lt;hr&gt;Used in frontend and admin panel" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fontSize=13;strokeColor=#222222;fillColor=#f7f7f7;" vertex="1" parent="1">
+          <mxGeometry x="910" y="705" width="210" height="180" as="geometry"/>
+        </mxCell>
+        <mxCell id="notification" value="&lt;b&gt;AdminNotification&lt;/b&gt;&lt;hr&gt;- id&lt;br&gt;- user_id&lt;br&gt;- type&lt;br&gt;- title&lt;br&gt;- message&lt;br&gt;- is_read&lt;hr&gt;+ user()" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fontSize=13;strokeColor=#222222;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="335" y="150" width="190" height="175" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="rel-user-booking" value="1 creates *" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;fontSize=12;strokeColor=#222222;" edge="1" parent="1" source="user" target="booking">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="rel-agency-package" value="1 owns *" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;fontSize=12;strokeColor=#222222;" edge="1" parent="1" source="agency" target="package">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="rel-agency-booking" value="1 receives *" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;fontSize=12;strokeColor=#222222;" edge="1" parent="1" source="agency" target="booking">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="rel-package-booking" value="1 has *" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;fontSize=12;strokeColor=#222222;" edge="1" parent="1" source="package" target="booking">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="rel-booking-payment" value="1 has *" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=diamondThin;endFill=0;fontSize=12;strokeColor=#222222;" edge="1" parent="1" source="booking" target="payment">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="rel-payment-log" value="1 records *" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=diamondThin;endFill=0;fontSize=12;strokeColor=#222222;" edge="1" parent="1" source="payment" target="paymentlog">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="rel-user-payment" value="1 pays *" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;fontSize=12;dashed=1;strokeColor=#222222;" edge="1" parent="1" source="user" target="payment">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="rel-user-notification" value="1 gets *" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;fontSize=12;strokeColor=#222222;" edge="1" parent="1" source="user" target="notification">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="rel-coupon-booking" value="applied by code" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;fontSize=12;dashed=1;strokeColor=#222222;" edge="1" parent="1" source="coupon" target="booking">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="rel-content-package" value="supports display" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;fontSize=12;dashed=1;strokeColor=#222222;" edge="1" parent="1" source="content" target="package">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -18,13 +18,16 @@ class Payment extends Model
         'currency',
         'payment_method',
         'transaction_id',
-        'status',
+        'reference_no',        // Alternative reference number for simple payments
+        'status',              // paid, unpaid, failed
+        'paid_at',             // Timestamp when payment was completed
         'gateway_response',
     ];
 
     protected $casts = [
         'amount' => 'decimal:2',
         'gateway_response' => 'array',
+        'paid_at' => 'datetime',  // Cast paid_at to datetime for easy formatting
     ];
 
     public function user(): BelongsTo

@@ -102,18 +102,25 @@
                             <th>Agency</th>
                             <th>Travel Date</th>
                             <th>Amount</th>
-                            <th>Status</th>
+                            <th>Booking Status</th>
+                            <th>Payment Status</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($bookings as $booking)
+                            @php
+                                // Get latest payment for this booking
+                                $payment = $booking->payments()->latest()->first();
+                                $paymentStatus = $payment?->status ?? 'unpaid';
+                            @endphp
                             <tr data-booking-id="{{ $booking->booking_reference }}"
                                 data-customer="{{ $booking->user?->name }}" data-email="{{ $booking->user?->email }}"
                                 data-package="{{ $booking->package_name }}"
                                 data-agency="{{ $booking->agency?->name }}"
                                 data-travel-date="{{ optional($booking->travel_date)->format('Y-m-d') }}"
                                 data-amount="{{ $booking->amount }}" data-status="{{ $booking->status }}"
+                                data-payment-status="{{ $paymentStatus }}"
                                 data-update-url="{{ route('admin.bookings.status', $booking) }}">
                                 <td><span class="booking-id">{{ $booking->booking_reference }}</span></td>
                                 <td>{{ $booking->user?->name }}</td>
@@ -124,6 +131,17 @@
                                 <td><span
                                         class="tn-badge tn-badge-{{ $booking->status === 'confirmed' ? 'success' : ($booking->status === 'pending' ? 'warning' : 'danger') }}">
                                         {{ ucfirst($booking->status) }}</span>
+                                </td>
+                                <td>
+                                    @if ($paymentStatus === 'paid')
+                                        <span class="tn-badge tn-badge-success">
+                                            <i class="fas fa-credit-card me-1"></i>Paid
+                                        </span>
+                                    @else
+                                        <span class="tn-badge tn-badge-warning">
+                                            <i class="fas fa-hourglass-half me-1"></i>Unpaid
+                                        </span>
+                                    @endif
                                 </td>
                                 <td>
                                     <div class="dropdown">
@@ -211,8 +229,12 @@
                             <span id="detailAmount">-</span>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <span class="text-muted-tn">Status</span>
+                            <span class="text-muted-tn">Booking Status</span>
                             <span id="detailStatus" class="tn-badge tn-badge-success">Confirmed</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted-tn">Payment Status</span>
+                            <span id="detailPaymentStatus" class="tn-badge tn-badge-warning">Unpaid</span>
                         </div>
                     </div>
                 </div>
@@ -273,6 +295,8 @@
                 detailModalElement.querySelector('#detailAmount').textContent = row.dataset.amount
                     ? `$${Number(row.dataset.amount).toFixed(0)}`
                     : '-';
+
+                // Update booking status badge
                 const statusBadge = detailModalElement.querySelector('#detailStatus');
                 const status = row.dataset.status || 'pending';
                 statusBadge.className = status === 'confirmed'
@@ -281,6 +305,16 @@
                         ? 'tn-badge tn-badge-warning'
                         : 'tn-badge tn-badge-danger';
                 statusBadge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+
+                // Update payment status badge
+                const paymentStatusBadge = detailModalElement.querySelector('#detailPaymentStatus');
+                const paymentStatus = row.dataset.paymentStatus || 'unpaid';
+                paymentStatusBadge.className = paymentStatus === 'paid'
+                    ? 'tn-badge tn-badge-success'
+                    : 'tn-badge tn-badge-warning';
+                paymentStatusBadge.innerHTML = paymentStatus === 'paid'
+                    ? '<i class="fas fa-credit-card me-1"></i>Paid'
+                    : '<i class="fas fa-hourglass-half me-1"></i>Unpaid';
             };
 
             document.querySelectorAll('[data-action="view"]').forEach((button) => {

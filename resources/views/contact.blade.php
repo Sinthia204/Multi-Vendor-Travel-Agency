@@ -36,9 +36,9 @@
                 <div class="contact-card">
                     <h3>Contact information</h3>
                     <div class="contact-list">
-                        <div><i class="fa-solid fa-phone"></i> {{ getSetting('contact_phone', '+1 (555) 210-8842') }}</div>
+                        <div><i class="fa-solid fa-phone"></i> {{ getSetting('contact_phone', '01611481179') }}</div>
                         <div><i class="fa-solid fa-envelope"></i> {{ getSetting('contact_email', 'hello@travelnest.com') }}</div>
-                        <div><i class="fa-solid fa-location-dot"></i> {{ getSetting('contact_address', '86 Harbor Street, Suite 420, Seattle, WA') }}</div>
+                        <div><i class="fa-solid fa-location-dot"></i> {{ getSetting('contact_address', 'Sector 11,Road 11,House 56,Mirpur') }}</div>
                     </div>
                     @php
                         $mapEmbed = getSetting('contact_map_embed');

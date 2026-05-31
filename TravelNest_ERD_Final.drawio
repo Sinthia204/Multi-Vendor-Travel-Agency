@@ -1,0 +1,137 @@
+<mxfile host="app.diagrams.net" modified="2026-05-11T00:00:00.000Z" agent="Codex" version="24.7.17" type="device">
+  <diagram id="TravelNest-ERD" name="TravelNest ERD">
+    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="2050" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title" value="TravelNest Database ERD" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="430" y="20" width="540" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend" value="&lt;b&gt;Legend&lt;/b&gt;&#xa;PK = Primary Key&#xa;FK = Foreign Key&#xa;UQ = Unique Key&#xa;FK arrows point from parent table to child table" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#F9FAFB;strokeColor=#6B7280;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="20" width="280" height="95" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="users" value="&lt;b&gt;users&lt;/b&gt;&#xa;PK id : bigint&#xa;name : varchar&#xa;UQ email : varchar&#xa;email_verified_at : timestamp nullable&#xa;password : varchar&#xa;role : varchar default user&#xa;is_admin : boolean&#xa;status : varchar default active&#xa;remember_token : varchar nullable&#xa;provider : varchar nullable&#xa;provider_id : varchar nullable&#xa;avatar : varchar nullable&#xa;created_at : timestamp&#xa;updated_at : timestamp" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#EAF2FF;strokeColor=#2563EB;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="70" y="100" width="280" height="285" as="geometry"/>
+        </mxCell>
+        <mxCell id="bookings" value="&lt;b&gt;bookings&lt;/b&gt;&#xa;PK id : bigint&#xa;FK user_id : bigint&#xa;FK agency_id : bigint nullable&#xa;FK package_id : bigint nullable&#xa;UQ booking_reference : varchar&#xa;package_name : varchar&#xa;travel_date : date nullable&#xa;amount : decimal(10,2)&#xa;discount_amount : decimal(10,2)&#xa;coupon_code : varchar nullable&#xa;currency : varchar default BDT&#xa;status : varchar default pending&#xa;created_at : timestamp&#xa;updated_at : timestamp" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#ECFDF5;strokeColor=#059669;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="410" y="100" width="300" height="285" as="geometry"/>
+        </mxCell>
+        <mxCell id="payments" value="&lt;b&gt;payments&lt;/b&gt;&#xa;PK id : bigint&#xa;FK user_id : bigint&#xa;FK booking_id : bigint&#xa;amount : decimal(10,2)&#xa;currency : varchar default BDT&#xa;payment_method : varchar&#xa;UQ transaction_id : varchar&#xa;status : varchar default pending&#xa;gateway_response : json nullable&#xa;created_at : timestamp&#xa;updated_at : timestamp" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#FFF7ED;strokeColor=#EA580C;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="770" y="100" width="280" height="245" as="geometry"/>
+        </mxCell>
+        <mxCell id="payment_logs" value="&lt;b&gt;payment_logs&lt;/b&gt;&#xa;PK id : bigint&#xa;FK payment_id : bigint nullable&#xa;type : varchar&#xa;direction : varchar&#xa;payload : json nullable&#xa;created_at : timestamp&#xa;updated_at : timestamp" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#FFF7ED;strokeColor=#EA580C;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="125" width="250" height="180" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="agencies" value="&lt;b&gt;agencies&lt;/b&gt;&#xa;PK id : bigint&#xa;name : varchar&#xa;contact_person : varchar&#xa;UQ email : varchar&#xa;phone : varchar&#xa;address : varchar nullable&#xa;description : text nullable&#xa;password : varchar nullable&#xa;logo_path : varchar nullable&#xa;status : varchar default pending&#xa;registered_at : date nullable&#xa;approved_at : timestamp nullable&#xa;rejected_at : timestamp nullable&#xa;remember_token : varchar nullable&#xa;created_at : timestamp&#xa;updated_at : timestamp" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#F0FDFA;strokeColor=#0D9488;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="70" y="440" width="280" height="315" as="geometry"/>
+        </mxCell>
+        <mxCell id="packages" value="&lt;b&gt;packages&lt;/b&gt;&#xa;PK id : bigint&#xa;FK agency_id : bigint&#xa;name : varchar&#xa;category : varchar&#xa;price : decimal(10,2)&#xa;duration : varchar&#xa;location : varchar&#xa;capacity : unsigned int&#xa;booked : unsigned int&#xa;status : varchar default active&#xa;is_featured : boolean&#xa;featured_order : unsigned int nullable&#xa;image_url : varchar nullable&#xa;gradient : varchar nullable&#xa;created_at : timestamp&#xa;updated_at : timestamp" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#F0FDFA;strokeColor=#0D9488;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="410" y="440" width="300" height="315" as="geometry"/>
+        </mxCell>
+        <mxCell id="coupons" value="&lt;b&gt;coupons&lt;/b&gt;&#xa;PK id : bigint&#xa;UQ code : varchar&#xa;type : varchar default percent&#xa;value : decimal(10,2)&#xa;active : boolean&#xa;expires_at : timestamp nullable&#xa;created_at : timestamp&#xa;updated_at : timestamp" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#FDF2F8;strokeColor=#DB2777;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="770" y="450" width="280" height="190" as="geometry"/>
+        </mxCell>
+        <mxCell id="admin_notifications" value="&lt;b&gt;admin_notifications&lt;/b&gt;&#xa;PK id : bigint&#xa;FK user_id : bigint nullable&#xa;type : varchar(50)&#xa;title : varchar&#xa;message : text nullable&#xa;action_url : varchar nullable&#xa;is_read : boolean&#xa;data : json nullable&#xa;created_at : timestamp&#xa;updated_at : timestamp" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#EAF2FF;strokeColor=#2563EB;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="440" width="250" height="225" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="hotels" value="&lt;b&gt;hotels&lt;/b&gt;&#xa;PK id : bigint&#xa;name : varchar&#xa;city : varchar&#xa;country : varchar&#xa;address : varchar nullable&#xa;price_per_night : decimal(10,2)&#xa;rating : decimal(3,1) nullable&#xa;status : varchar default active&#xa;is_featured : boolean&#xa;featured_order : unsigned int nullable&#xa;image_url : varchar nullable&#xa;description : text nullable&#xa;created_at : timestamp&#xa;updated_at : timestamp" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#F3F4F6;strokeColor=#4B5563;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="70" y="815" width="280" height="275" as="geometry"/>
+        </mxCell>
+        <mxCell id="transports" value="&lt;b&gt;transports&lt;/b&gt;&#xa;PK id : bigint&#xa;name : varchar&#xa;type : varchar&#xa;provider : varchar nullable&#xa;price_per_trip : decimal(10,2)&#xa;capacity : unsigned int nullable&#xa;status : varchar default active&#xa;image_url : varchar nullable&#xa;description : text nullable&#xa;created_at : timestamp&#xa;updated_at : timestamp" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#F3F4F6;strokeColor=#4B5563;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="410" y="815" width="300" height="235" as="geometry"/>
+        </mxCell>
+        <mxCell id="experiences" value="&lt;b&gt;experiences&lt;/b&gt;&#xa;PK id : bigint&#xa;title : varchar&#xa;icon : varchar nullable&#xa;description : text&#xa;image_url : varchar nullable&#xa;is_active : boolean&#xa;sort_order : unsigned int&#xa;created_at : timestamp&#xa;updated_at : timestamp" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#F3F4F6;strokeColor=#4B5563;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="770" y="815" width="280" height="205" as="geometry"/>
+        </mxCell>
+        <mxCell id="stories" value="&lt;b&gt;stories&lt;/b&gt;&#xa;PK id : bigint&#xa;title : varchar&#xa;category : varchar nullable&#xa;read_time : varchar nullable&#xa;excerpt : text&#xa;image_url : varchar nullable&#xa;link_url : varchar nullable&#xa;is_active : boolean&#xa;sort_order : unsigned int&#xa;created_at : timestamp&#xa;updated_at : timestamp" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#F3F4F6;strokeColor=#4B5563;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="815" width="250" height="235" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="home_contents" value="&lt;b&gt;home_contents&lt;/b&gt;&#xa;PK id : bigint&#xa;hero_badge : varchar nullable&#xa;hero_title : varchar&#xa;hero_subtitle : text nullable&#xa;hero_image_url : varchar nullable&#xa;hero_cta_text : varchar nullable&#xa;hero_cta_url : varchar nullable&#xa;destinations_badge : varchar nullable&#xa;destinations_title : varchar nullable&#xa;destinations_subtitle : text nullable&#xa;packages_badge : varchar nullable&#xa;packages_title : varchar nullable&#xa;packages_subtitle : text nullable&#xa;experiences_badge : varchar nullable&#xa;experiences_title : varchar nullable&#xa;experiences_subtitle : text nullable&#xa;stories_badge : varchar nullable&#xa;stories_title : varchar nullable&#xa;stories_subtitle : text nullable&#xa;created_at : timestamp&#xa;updated_at : timestamp" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#F3F4F6;strokeColor=#4B5563;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="70" y="1130" width="330" height="385" as="geometry"/>
+        </mxCell>
+        <mxCell id="page_heroes" value="&lt;b&gt;page_heroes&lt;/b&gt;&#xa;PK id : bigint&#xa;UQ slug : varchar&#xa;badge : varchar nullable&#xa;title : varchar&#xa;subtitle : text nullable&#xa;background_image_url : varchar nullable&#xa;cta_text : varchar nullable&#xa;cta_url : varchar nullable&#xa;created_at : timestamp&#xa;updated_at : timestamp" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#F3F4F6;strokeColor=#4B5563;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="450" y="1130" width="280" height="225" as="geometry"/>
+        </mxCell>
+        <mxCell id="settings" value="&lt;b&gt;settings&lt;/b&gt;&#xa;PK id : bigint&#xa;UQ key : varchar&#xa;value : text nullable&#xa;created_at : timestamp&#xa;updated_at : timestamp" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#F3F4F6;strokeColor=#4B5563;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="790" y="1130" width="260" height="145" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="permissions" value="&lt;b&gt;permissions&lt;/b&gt;&#xa;PK id : bigint&#xa;name : varchar&#xa;guard_name : varchar&#xa;UQ name + guard_name&#xa;created_at : timestamp&#xa;updated_at : timestamp" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#F5F3FF;strokeColor=#7C3AED;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="70" y="1580" width="280" height="160" as="geometry"/>
+        </mxCell>
+        <mxCell id="roles" value="&lt;b&gt;roles&lt;/b&gt;&#xa;PK id : bigint&#xa;name : varchar&#xa;guard_name : varchar&#xa;UQ name + guard_name&#xa;created_at : timestamp&#xa;updated_at : timestamp" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#F5F3FF;strokeColor=#7C3AED;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="410" y="1580" width="280" height="160" as="geometry"/>
+        </mxCell>
+        <mxCell id="role_has_permissions" value="&lt;b&gt;role_has_permissions&lt;/b&gt;&#xa;PK/FK permission_id : bigint&#xa;PK/FK role_id : bigint" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#F5F3FF;strokeColor=#7C3AED;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="750" y="1595" width="280" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="model_has_roles" value="&lt;b&gt;model_has_roles&lt;/b&gt;&#xa;PK/FK role_id : bigint&#xa;PK model_type : varchar&#xa;PK model_id : bigint&#xa;Polymorphic model relation" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#F5F3FF;strokeColor=#7C3AED;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="1510" width="280" height="135" as="geometry"/>
+        </mxCell>
+        <mxCell id="model_has_permissions" value="&lt;b&gt;model_has_permissions&lt;/b&gt;&#xa;PK/FK permission_id : bigint&#xa;PK model_type : varchar&#xa;PK model_id : bigint&#xa;Polymorphic model relation" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#F5F3FF;strokeColor=#7C3AED;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="1690" width="280" height="135" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="personal_access_tokens" value="&lt;b&gt;personal_access_tokens&lt;/b&gt;&#xa;PK id : bigint&#xa;tokenable_type : varchar&#xa;tokenable_id : bigint&#xa;name : varchar&#xa;UQ token : varchar(64)&#xa;abilities : text nullable&#xa;last_used_at : timestamp nullable&#xa;expires_at : timestamp nullable&#xa;created_at : timestamp&#xa;updated_at : timestamp&#xa;Polymorphic token owner" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#FEFCE8;strokeColor=#CA8A04;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="70" y="1825" width="280" height="245" as="geometry"/>
+        </mxCell>
+        <mxCell id="password_reset_tokens" value="&lt;b&gt;password_reset_tokens&lt;/b&gt;&#xa;PK email : varchar&#xa;token : varchar&#xa;created_at : timestamp nullable&#xa;Logical link to users.email" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#FEFCE8;strokeColor=#CA8A04;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="410" y="1825" width="280" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="failed_jobs" value="&lt;b&gt;failed_jobs&lt;/b&gt;&#xa;PK id : bigint&#xa;UQ uuid : varchar&#xa;connection : text&#xa;queue : text&#xa;payload : longtext&#xa;exception : longtext&#xa;failed_at : timestamp" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#FEFCE8;strokeColor=#CA8A04;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="750" y="1825" width="280" height="180" as="geometry"/>
+        </mxCell>
+        <mxCell id="jobs" value="&lt;b&gt;jobs&lt;/b&gt;&#xa;PK id : bigint&#xa;queue : varchar index&#xa;payload : longtext&#xa;attempts : unsigned tinyint&#xa;reserved_at : unsigned int nullable&#xa;available_at : unsigned int&#xa;created_at : unsigned int" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#FEFCE8;strokeColor=#CA8A04;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="1870" width="280" height="180" as="geometry"/>
+        </mxCell>
+        <mxCell id="job_batches" value="&lt;b&gt;job_batches&lt;/b&gt;&#xa;PK id : varchar&#xa;name : varchar&#xa;total_jobs : int&#xa;pending_jobs : int&#xa;failed_jobs : int&#xa;failed_job_ids : longtext&#xa;options : mediumtext nullable&#xa;cancelled_at : int nullable&#xa;created_at : int&#xa;finished_at : int nullable" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fontSize=12;fillColor=#FEFCE8;strokeColor=#CA8A04;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="750" y="2040" width="280" height="225" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_users_bookings" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;startArrow=ERone;strokeWidth=2;strokeColor=#374151;fontSize=11;" edge="1" parent="1" source="users" target="bookings">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_users_payments" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;startArrow=ERone;strokeWidth=2;strokeColor=#374151;fontSize=11;" edge="1" parent="1" source="users" target="payments">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_bookings_payments" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;startArrow=ERone;strokeWidth=2;strokeColor=#374151;fontSize=11;" edge="1" parent="1" source="bookings" target="payments">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_payments_logs" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;startArrow=ERone;strokeWidth=2;strokeColor=#374151;fontSize=11;" edge="1" parent="1" source="payments" target="payment_logs">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_agencies_packages" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;startArrow=ERone;strokeWidth=2;strokeColor=#374151;fontSize=11;" edge="1" parent="1" source="agencies" target="packages">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_agencies_bookings" value="1:N optional" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;startArrow=ERone;strokeWidth=2;strokeColor=#374151;fontSize=11;" edge="1" parent="1" source="agencies" target="bookings">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_packages_bookings" value="1:N optional" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;startArrow=ERone;strokeWidth=2;strokeColor=#374151;fontSize=11;" edge="1" parent="1" source="packages" target="bookings">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_users_notifications" value="1:N optional" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;startArrow=ERone;strokeWidth=2;strokeColor=#374151;fontSize=11;" edge="1" parent="1" source="users" target="admin_notifications">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_coupons_bookings" value="logical code match" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;startArrow=none;strokeWidth=2;strokeColor=#9CA3AF;fontSize=11;" edge="1" parent="1" source="coupons" target="bookings">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_roles_role_permissions" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;startArrow=ERone;strokeWidth=2;strokeColor=#374151;fontSize=11;" edge="1" parent="1" source="roles" target="role_has_permissions">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_permissions_role_permissions" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;startArrow=ERone;strokeWidth=2;strokeColor=#374151;fontSize=11;" edge="1" parent="1" source="permissions" target="role_has_permissions">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_roles_model_roles" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;startArrow=ERone;strokeWidth=2;strokeColor=#374151;fontSize=11;" edge="1" parent="1" source="roles" target="model_has_roles">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_permissions_model_permissions" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;startArrow=ERone;strokeWidth=2;strokeColor=#374151;fontSize=11;" edge="1" parent="1" source="permissions" target="model_has_permissions">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -89,7 +89,22 @@ Route::middleware('auth')->group(function () {
         ->name('bookings.from-package');
     Route::put('/bookings/{booking}/coupon', [BookingController::class, 'updateCoupon'])
         ->name('bookings.coupon');
+
+    // User bookings page - view all bookings
+    Route::get('/bookings', function () {
+        // Get all bookings for the authenticated user
+        $bookings = \App\Models\Booking::where('user_id', auth()->id())
+            ->with(['agency', 'payments'])
+            ->latest()
+            ->get();
+
+        return view('user.bookings.index', compact('bookings'));
+    })->name('user.bookings.index');
+
+    // Payment routes - simple payment processing
     Route::get('/payment/checkout/{booking}', [PaymentController::class, 'checkout'])->name('payment.checkout');
+    Route::post('/payment/process', [PaymentController::class, 'process'])->name('payment.process');
+    Route::get('/payment/{payment}', [PaymentController::class, 'show'])->name('payment.show');
     Route::get('/payment/invoice/{payment}', [PaymentController::class, 'invoice'])
         ->name('payment.invoice');
     Route::post('/payment/initiate', [PaymentController::class, 'initiatePayment'])->name('payment.initiate');
@@ -117,6 +132,9 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::put('/agencies/{agency}', [AdminAgencyController::class, 'update'])->name('admin.agencies.update');
     Route::put('/agencies/{agency}/approve', [AdminAgencyController::class, 'approve'])->name('admin.agencies.approve');
     Route::put('/agencies/{agency}/reject', [AdminAgencyController::class, 'reject'])->name('admin.agencies.reject');
+    // Routes for viewing and downloading agency business documents
+    Route::get('/agencies/{agency}/document/view', [AdminAgencyController::class, 'viewDocument'])->name('admin.agencies.document.view');
+    Route::get('/agencies/{agency}/document/download', [AdminAgencyController::class, 'downloadDocument'])->name('admin.agencies.document.download');
     Route::delete('/agencies/{agency}', [AdminAgencyController::class, 'destroy'])->name('admin.agencies.destroy');
 
     Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users');

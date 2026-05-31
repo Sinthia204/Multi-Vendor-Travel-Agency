@@ -124,12 +124,19 @@
                                 ->map(fn($part) => strtoupper(substr($part, 0, 1)))
                                 ->take(2)
                                 ->implode('');
+                            // Calculate total revenue from all bookings of this agency
+                            $totalRevenue = $agency->bookings->sum('amount');
                         @endphp
                         <tr data-agency-name="{{ $agency->name }}" data-contact="{{ $agency->contact_person }}"
                             data-email="{{ $agency->email }}" data-phone="{{ $agency->phone }}"
                             data-status="{{ $agency->status }}"
                             data-registered="{{ optional($agency->registered_at)->format('M d, Y') }}"
                             data-registered-raw="{{ optional($agency->registered_at)->format('Y-m-d') }}"
+                            data-trade-license="{{ $agency->trade_license_number }}"
+                            data-business-document="{{ $agency->business_document }}"
+                            data-logo-path="{{ $agency->logo_path }}"
+                            data-bookings-count="{{ $agency->bookings->count() }}"
+                            data-revenue-total="{{ $totalRevenue }}"
                             data-update-url="{{ route('admin.agencies.update', $agency) }}"
                             data-id="{{ $agency->id }}">
                             <td>
@@ -287,76 +294,94 @@
                                     <p class="tn-form-label mb-1">Registration Date</p>
                                     <p>January 15, 2026</p>
                                 </div>
+                                {{-- Display trade license number for verification --}}
+                                <div class="col-md-6">
+                                    <p class="tn-form-label mb-1">Trade License Number</p>
+                                    <p id="tradeLicenseDisplay">TL-123456789</p>
+                                </div>
                                 <div class="col-12">
                                     <p class="tn-form-label mb-1">Address</p>
                                     <p>42 Motijheel C/A, Dhaka-1000, Bangladesh</p>
                                 </div>
+                                {{-- Show booking and revenue info - will be updated dynamically based on agency status --}}
                                 <div class="col-md-6">
                                     <p class="tn-form-label mb-1">Total Bookings</p>
-                                    <p style="font-family:'Space Grotesk';font-weight:600;font-size:20px;">342</p>
+                                    <p id="totalBookingsDisplay" style="font-family:'Space Grotesk';font-weight:600;font-size:20px;">0</p>
                                 </div>
                                 <div class="col-md-6">
                                     <p class="tn-form-label mb-1">Total Revenue</p>
-                                    <p
+                                    <p id="totalRevenueDisplay"
                                         style="font-family:'Space Grotesk';font-weight:600;font-size:20px;color:var(--primary);">
-                                        $48,750</p>
+                                        $0</p>
+                                </div>
+                                {{-- Show alert if agency is pending --}}
+                                <div id="pendingOverviewAlert" class="col-12 p-3" style="background:rgba(255,193,7,0.1);border-radius:8px;display:none;">
+                                    <div class="d-flex align-items-center gap-2" style="color:#ff9800;font-size:13px;">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span><strong>Pending Agency:</strong> This agency cannot receive bookings until approved. Once approved, booking history will appear here.</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <!-- Documents -->
                         <div class="tab-pane fade" id="tabDocuments">
                             <div class="d-flex flex-column gap-3">
-                                <div class="d-flex align-items-center justify-content-between p-3"
+                                {{-- Display business document if it exists (for agency verification) --}}
+                                <div id="businessDocContainer" class="d-flex align-items-center justify-content-between p-3"
                                     style="background:var(--muted);border-radius:8px;">
                                     <div class="d-flex align-items-center gap-3">
-                                        <i class="fas fa-file-pdf text-destructive" style="font-size:24px;"></i>
+                                        <i id="businessDocIcon" class="fas fa-file-pdf text-destructive" style="font-size:24px;"></i>
                                         <div>
-                                            <div style="font-weight:500;">Business Registration Certificate</div>
-                                            <div class="text-muted-tn" style="font-size:12px;">PDF · 2.4 MB · Uploaded Mar
-                                                20, 2026</div>
+                                            <div id="businessDocName" style="font-weight:500;">Business Document</div>
+                                            <div class="text-muted-tn" id="businessDocInfo" style="font-size:12px;"></div>
                                         </div>
                                     </div>
                                     <div class="d-flex gap-2">
-                                        <button class="btn-outline-tn btn-sm-tn"><i class="fas fa-eye"></i></button>
-                                        <button class="btn-outline-tn btn-sm-tn"><i class="fas fa-download"></i></button>
+                                        <a id="businessDocView" href="#" class="btn-outline-tn btn-sm-tn" title="View document">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a id="businessDocDownload" href="#" class="btn-outline-tn btn-sm-tn" title="Download document" download>
+                                            <i class="fas fa-download"></i>
+                                        </a>
                                     </div>
                                 </div>
-                                <div class="d-flex align-items-center justify-content-between p-3"
+                                {{-- Show placeholder if no document uploaded --}}
+                                <div id="noDocPlaceholder" class="p-3 text-muted-tn text-center"
+                                    style="background:var(--muted);border-radius:8px;">
+                                    <i class="fas fa-file-upload" style="font-size:32px;opacity:0.5;margin-bottom:10px;display:block;"></i>
+                                    No business document uploaded yet
+                                </div>
+                                <div id="agencyLogoContainer" class="d-flex align-items-center justify-content-between p-3"
                                     style="background:var(--muted);border-radius:8px;">
                                     <div class="d-flex align-items-center gap-3">
                                         <i class="fas fa-file-image text-primary-tn" style="font-size:24px;"></i>
                                         <div>
-                                            <div style="font-weight:500;">Trade License</div>
-                                            <div class="text-muted-tn" style="font-size:12px;">JPG · 1.8 MB · Uploaded Mar
-                                                20, 2026</div>
+                                            <div style="font-weight:500;">Agency Logo</div>
+                                            <div class="text-muted-tn" style="font-size:12px;">Image · Uploaded on registration</div>
                                         </div>
                                     </div>
                                     <div class="d-flex gap-2">
-                                        <button class="btn-outline-tn btn-sm-tn"><i class="fas fa-eye"></i></button>
-                                        <button class="btn-outline-tn btn-sm-tn"><i class="fas fa-download"></i></button>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-between p-3"
-                                    style="background:var(--muted);border-radius:8px;">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <i class="fas fa-file-pdf text-destructive" style="font-size:24px;"></i>
-                                        <div>
-                                            <div style="font-weight:500;">TIN Certificate</div>
-                                            <div class="text-muted-tn" style="font-size:12px;">PDF · 0.9 MB · Uploaded Mar
-                                                20, 2026</div>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex gap-2">
-                                        <button class="btn-outline-tn btn-sm-tn"><i class="fas fa-eye"></i></button>
-                                        <button class="btn-outline-tn btn-sm-tn"><i class="fas fa-download"></i></button>
+                                        <a id="agencyLogoView" href="#" class="btn-outline-tn btn-sm-tn" title="View logo" target="_blank">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a id="agencyLogoDownload" href="#" class="btn-outline-tn btn-sm-tn" title="Download logo" download="agency-logo">
+                                            <i class="fas fa-download"></i>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <!-- Bookings Tab -->
                         <div class="tab-pane fade" id="tabBookings">
-                            <p class="text-muted-tn">This agency has 342 total bookings. Showing the latest 3:</p>
-                            <table class="tn-table">
+                            {{-- Show message if agency is not approved --}}
+                            <div id="pendingBookingAlert" class="p-3 mb-3" style="background:rgba(255,193,7,0.1);border-radius:8px;display:none;">
+                                <div class="d-flex align-items-center gap-2 text-warning" style="color:#ff9800;font-size:14px;">
+                                    <i class="fas fa-exclamation-circle" style="font-size:18px;"></i>
+                                    <span><strong>This agency is pending approval.</strong> No bookings will be accepted until the agency is approved by admin.</span>
+                                </div>
+                            </div>
+                            <p id="bookingsSummary" class="text-muted-tn">This agency has 342 total bookings. Showing the latest 3:</p>
+                            <table id="bookingsTable" class="tn-table">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -496,16 +521,119 @@
                 const title = detailModalElement.querySelector('.modal-title');
                 const badge = detailModalElement.querySelector('.tn-badge');
                 const fields = detailModalElement.querySelectorAll('.tab-pane#tabOverview p:not(.tn-form-label)');
+                const agencyStatus = row.dataset.status;
+
                 if (title) title.textContent = row.dataset.agencyName || 'Agency';
                 if (badge) {
-                    badge.className = `tn-badge tn-badge-${row.dataset.status === 'approved' ? 'success' : row.dataset.status === 'pending' ? 'warning' : 'danger'}`;
-                    badge.textContent = row.dataset.status ? row.dataset.status.charAt(0).toUpperCase() + row.dataset.status.slice(1) : 'Pending';
+                    badge.className = `tn-badge tn-badge-${agencyStatus === 'approved' ? 'success' : agencyStatus === 'pending' ? 'warning' : 'danger'}`;
+                    badge.textContent = agencyStatus ? agencyStatus.charAt(0).toUpperCase() + agencyStatus.slice(1) : 'Pending';
                 }
-                if (fields.length >= 4) {
+                if (fields.length >= 5) {
                     fields[0].textContent = row.dataset.contact || '-';
                     fields[1].textContent = row.dataset.email || '-';
                     fields[2].textContent = row.dataset.phone || '-';
                     fields[3].textContent = row.dataset.registered || '-';
+                    // Display trade license number in the overview tab
+                    fields[4].textContent = row.dataset.tradeLicense || 'Not provided';
+                }
+
+                // Update Total Bookings and Total Revenue based on agency status
+                const totalBookingsDisplay = detailModalElement.querySelector('#totalBookingsDisplay');
+                const totalRevenueDisplay = detailModalElement.querySelector('#totalRevenueDisplay');
+                const pendingOverviewAlert = detailModalElement.querySelector('#pendingOverviewAlert');
+                const bookingsCount = parseInt(row.dataset.bookingsCount || 0);
+                const revenueTotal = parseFloat(row.dataset.revenueTotal || 0);
+
+                if (agencyStatus === 'pending') {
+                    // Pending agencies have no bookings or revenue
+                    if (totalBookingsDisplay) totalBookingsDisplay.textContent = '0';
+                    if (totalRevenueDisplay) totalRevenueDisplay.textContent = '$0';
+                    if (pendingOverviewAlert) pendingOverviewAlert.style.display = 'block';
+                } else {
+                    // Approved/other status agencies show actual booking and revenue data
+                    if (totalBookingsDisplay) totalBookingsDisplay.textContent = bookingsCount;
+                    if (totalRevenueDisplay) totalRevenueDisplay.textContent = '$' + revenueTotal.toFixed(2);
+                    if (pendingOverviewAlert) pendingOverviewAlert.style.display = 'none';
+                }
+
+                // Show/hide pending booking alert based on agency status
+                const pendingAlert = detailModalElement.querySelector('#pendingBookingAlert');
+                const bookingsSummary = detailModalElement.querySelector('#bookingsSummary');
+                const bookingsTable = detailModalElement.querySelector('#bookingsTable');
+
+                if (agencyStatus === 'pending') {
+                    // Show alert for pending agencies - no bookings allowed until approved
+                    if (pendingAlert) pendingAlert.style.display = 'block';
+                    if (bookingsSummary) bookingsSummary.style.display = 'none';
+                    if (bookingsTable) bookingsTable.style.display = 'none';
+                } else {
+                    // Hide alert for approved agencies - show booking history
+                    if (pendingAlert) pendingAlert.style.display = 'none';
+                    if (bookingsSummary) bookingsSummary.style.display = 'block';
+                    if (bookingsTable) bookingsTable.style.display = 'table';
+                }
+
+                // Handle business document display in Documents tab
+                const businessDocContainer = detailModalElement.querySelector('#businessDocContainer');
+                const noDocPlaceholder = detailModalElement.querySelector('#noDocPlaceholder');
+                const businessDocument = row.dataset.businessDocument;
+
+                if (businessDocument) {
+                    // Hide placeholder and show document container
+                    if (noDocPlaceholder) noDocPlaceholder.style.display = 'none';
+                    if (businessDocContainer) businessDocContainer.style.display = 'flex';
+
+                    // Set document name and info
+                    const docName = detailModalElement.querySelector('#businessDocName');
+                    const docInfo = detailModalElement.querySelector('#businessDocInfo');
+                    const docIcon = detailModalElement.querySelector('#businessDocIcon');
+                    const viewBtn = detailModalElement.querySelector('#businessDocView');
+                    const downloadBtn = detailModalElement.querySelector('#businessDocDownload');
+
+                    if (docName) docName.textContent = 'Business Document (Verification)';
+                    if (docInfo) docInfo.textContent = 'PDF, JPG, JPEG or PNG · Uploaded on registration';
+
+                    // Set file icon based on extension
+                    const ext = businessDocument.split('.').pop().toLowerCase();
+                    if (docIcon) {
+                        if (ext === 'pdf') {
+                            docIcon.className = 'fas fa-file-pdf text-destructive';
+                        } else if (['jpg', 'jpeg', 'png'].includes(ext)) {
+                            docIcon.className = 'fas fa-file-image text-primary-tn';
+                        }
+                    }
+
+                    // Set view and download links
+                    const agencyId = row.dataset.id;
+                    if (viewBtn) viewBtn.href = `/admin/agencies/${agencyId}/document/view`;
+                    if (downloadBtn) downloadBtn.href = `/admin/agencies/${agencyId}/document/download`;
+                } else {
+                    // Show placeholder if no document
+                    if (noDocPlaceholder) noDocPlaceholder.style.display = 'block';
+                    if (businessDocContainer) businessDocContainer.style.display = 'none';
+                }
+
+                // Handle agency logo display in Documents tab
+                const agencyLogoContainer = detailModalElement.querySelector('#agencyLogoContainer');
+                const agencyLogoView = detailModalElement.querySelector('#agencyLogoView');
+                const agencyLogoDownload = detailModalElement.querySelector('#agencyLogoDownload');
+                const logoPath = row.dataset.logoPath;
+
+                if (logoPath && agencyLogoView && agencyLogoDownload) {
+                    // Logo exists - set the view and download links
+                    const logoUrl = `/storage/${logoPath}`;
+                    agencyLogoView.href = logoUrl;
+                    agencyLogoDownload.href = logoUrl;
+                    agencyLogoView.setAttribute('target', '_blank');
+                    if (agencyLogoContainer) agencyLogoContainer.style.opacity = '1';
+                } else if (agencyLogoView && agencyLogoDownload) {
+                    // No logo - disable the links
+                    agencyLogoView.href = '#';
+                    agencyLogoDownload.href = '#';
+                    agencyLogoView.onclick = (e) => e.preventDefault();
+                    agencyLogoDownload.onclick = (e) => e.preventDefault();
+                    agencyLogoView.style.opacity = '0.5';
+                    agencyLogoDownload.style.opacity = '0.5';
                 }
             };
 

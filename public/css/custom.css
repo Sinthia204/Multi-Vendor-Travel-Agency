@@ -715,32 +715,116 @@ a {
 }
 
 /* Reports specific layout helpers */
-.reports-filters {
+.reports-shell {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.reports-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.reports-section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.reports-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+}
+
+.reports-subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
+
+.reports-updated {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.reports-controls {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.reports-controls-row {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
   align-items: center;
 }
-.reports-filters .reports-filter-item {
+
+.reports-controls .reports-filter-item {
   flex: 0 1 auto;
-  min-width: 0; /* allows children to shrink inside flex */
+  min-width: 0;
 }
-.reports-filters .reports-search {
+
+.reports-controls .reports-search {
   flex: 1 1 320px;
   min-width: 0;
 }
 
-/* Summary cards grid: auto-fit with minmax to control column counts */
-.summary-grid {
+.reports-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.reports-kpi-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.reports-charts-grid {
   display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.reports-activity {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* Summary cards grid: auto-fit with minmax to control column counts */
+.reports-container {
+  max-width: 1200px;
+  margin: 0 auto 1.25rem;
+  padding: 0 1rem;
+}
+
+.summary-grid {
+  display: grid;
+  gap: 0.7rem;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  align-items: start;
+  grid-auto-flow: dense;
 }
 
 /* Ensure charts fit and do not overflow their card */
 .chart-area {
-  padding: 1rem 1.5rem 1.5rem;
-  height: 240px;
+  padding: 1rem 1.25rem 1.25rem;
+  height: 280px;
   position: relative;
   max-width: 100%;
   overflow: hidden;
@@ -766,9 +850,9 @@ a {
   z-index: 5;
 }
 
-/* Allow table cells to wrap on small screens to avoid forcing width */
+/* Allow table cells to wrap to avoid forcing horizontal scroll */
 .tn-table tbody td {
-  white-space: nowrap;
+  white-space: normal;
 }
 
 @media (max-width: 767px) {
@@ -808,6 +892,7 @@ a {
 
 @media (min-width: 992px) {
   .summary-grid { grid-template-columns: repeat(4, 1fr); }
+  .chart-area { height: 360px; }
 }
 
 /* ============================================
@@ -855,7 +940,14 @@ a {
 
 /* Stat Cards */
 .stat-card {
-  padding: 1.5rem;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  text-align: left;
+  min-height: 72px;
 }
 
 .stat-card-top {
@@ -914,16 +1006,31 @@ a {
 
 .stat-value {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--foreground);
-  line-height: 1.2;
+  line-height: 1.05;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .stat-label {
   font-size: 14px;
   color: var(--muted-foreground);
   margin-top: 0.25rem;
+}
+
+@media (max-width: 767px) {
+  .stat-value { font-size: 16px; }
+  .reports-controls { padding: 0.75rem; }
+  .reports-controls-row { gap: 0.5rem; }
+  .reports-section-header { flex-direction: column; align-items: flex-start; }
+  .reports-updated { white-space: normal; }
+  .reports-charts-grid,
+  .reports-activity { grid-template-columns: 1fr; }
+  .stat-card { flex-direction: column; align-items: center; text-align: center; }
 }
 
 /* Chart Cards */
@@ -986,6 +1093,20 @@ a {
   border-bottom: 1px solid var(--border-color);
   vertical-align: middle;
   color: var(--foreground);
+}
+
+.tn-ellipsis {
+  max-width: 170px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  vertical-align: bottom;
+  cursor: help;
+}
+
+@media (max-width: 767px) {
+  .tn-ellipsis { max-width: 120px; }
 }
 
 .tn-table tbody tr:last-child td {

@@ -23,7 +23,7 @@ class AdminPackageController extends Controller
             ->when($category && $category !== 'all', function ($query) use ($category) {
                 $query->where('category', $category);
             })
-            ->orderByDesc('created_at')
+            ->orderBy('created_at', 'desc')
             ->paginate(9)
             ->withQueryString();
 

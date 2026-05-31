@@ -24,6 +24,8 @@ class Agency extends Authenticatable
         'registered_at',
         'approved_at',
         'rejected_at',
+        'trade_license_number',      // New: Trade license number for agency verification
+        'business_document',          // New: Business document file path for verification
     ];
 
     protected $hidden = [

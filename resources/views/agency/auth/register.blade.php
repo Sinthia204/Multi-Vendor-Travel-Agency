@@ -80,6 +80,27 @@
                     @enderror
                 </div>
 
+                {{-- Trade License Number field for agency verification --}}
+                <div class="form-field">
+                    <label for="tradeLicenseNumber">Trade License Number</label>
+                    <input id="tradeLicenseNumber" type="text" name="trade_license_number"
+                        value="{{ old('trade_license_number') }}"
+                        placeholder="Enter your trade license number">
+                    @error('trade_license_number')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                {{-- Business Document upload field for agency verification --}}
+                <div class="form-field">
+                    <label for="businessDocument">Business Document (PDF, JPG, JPEG, PNG)</label>
+                    <input id="businessDocument" type="file" name="business_document"
+                        accept=".pdf,.jpg,.jpeg,.png">
+                    @error('business_document')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
+                </div>
+
                 <button class="btn-primary modal-submit" type="submit">Submit for approval</button>
             </form>
 

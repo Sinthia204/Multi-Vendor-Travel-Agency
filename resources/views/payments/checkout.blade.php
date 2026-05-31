@@ -156,10 +156,19 @@
                                     <span class="method-tag nagad">Mobile Banking</span>
                                 </button>
                             @endif
+                            <button type="button" class="method-button" data-method="upai">
+                                <span class="method-label">Upai</span>
+                                <span class="method-tag upai">Mobile Banking</span>
+                            </button>
+                            <button type="button" class="method-button" data-method="bkash">
+                                <span class="method-label">Bkash</span>
+                                <span class="method-tag bkash">Mobile Banking</span>
+                            </button>
                             <button type="button" class="method-button" data-method="rocket">
                                 <span class="method-label">Rocket</span>
                                 <span class="method-tag rocket">Mobile Banking</span>
                             </button>
+
                             @if ($cardEnabled)
                                 <button type="button"
                                     class="method-button {{ $defaultMethod === 'card' ? 'active' : '' }}"
@@ -192,6 +201,29 @@
                             {{ $booking->currency }}
                         </button>
                     </form>
+
+                    {{-- Simple Payment Method Alternative --}}
+                    <div class="payment-divider mt-4 mb-4">
+                        <span>Or pay using</span>
+                    </div>
+
+                    <div class="payment-methods-simple">
+                        <form method="POST" action="{{ route('payment.process') }}" class="simple-payment-form w-100">
+                            @csrf
+                            <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+                            <input type="hidden" name="payment_method" value="direct">
+
+                            <div class="alert alert-info mb-3">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Quick Payment:</strong> Click below to complete your payment instantly
+                            </div>
+
+                            <button type="submit" class="btn btn-outline-success w-100">
+                                <i class="fas fa-check-circle me-2"></i>
+                                Complete Payment Now
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

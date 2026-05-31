@@ -1,55 +1,57 @@
-"[php]": { "editor.formatOnSave": false }# TravelNest Documentation
+# TravelNest ডকুমেন্টেশন (বাংলা)
 
-## 1. Project Overview
+## ১। প্রকল্পের সারসংক্ষেপ
 
-TravelNest is a Laravel-based travel booking platform that provides a modern user experience for planning trips and a full admin panel for managing content and operations.
+TravelNest একটি Laravel ভিত্তিক ট্রাভেল বুকিং প্ল্যাটফর্ম। এটি ভ্রমণ পরিকল্পনা এবং বুকিংয়ের জন্য আধুনিক ইউজার ইন্টারফেস প্রদান করে এবং অ্যাডমিনদের জন্য সম্পূর্ণ অ্যাডমিন প্যানেল (ড্যাশবোর্ড ও ম্যানেজমেন্ট স্ক্রিন) রয়েছে।
 
-### Key Features
+### প্রধান বৈশিষ্ট্যসমূহ
 
-- Public landing page and booking flow
-- User authentication and session-based login
-- Admin panel with dashboards and management screens
-- Hotel and transport management (CRUD)
-- Booking and payment management
-- Payment gateway integration for Bangladesh (SSLCommerz)
+- পাবলিক ল্যান্ডিং পেজ ও বুকিং ফ্লো
+- ব্যবহারকারী রেজিস্ট্রেশন ও সেশন-ভিত্তিক লগইন
+- অ্যাডমিন প্যানেল—ড্যাশবোর্ড, ম্যানেজ স্ক্রিনসমূহ
+- হোটেল ও ট্রান্সপোর্ট ম্যানেজমেন্ট (CRUD)
+- বুকিং ও পেমেন্ট ম্যানেজমেন্ট
+- বাংলাদেশ ভোক্তা-কেন্দ্রিক পেমেন্ট গেটওয়ে ইন্টিগ্রেশন (SSLCommerz)
 
-### Target Users
+### লক্ষ্য ব্যবহারকারী
 
-- Travelers booking tours and packages
-- Admins managing bookings, users, and payments
-- Agencies or staff maintaining travel content
+- тура/প্যাকেজ বুক করা ভ্রমণকারীরা
+- বুকিং, ব্যবহারকারী এবং পেমেন্ট পরিচালনা করা অ্যাডমিনরা
+- ট্যুর-এজেন্সি বা কনটেন্ট ম্যানেজমেন্ট স্টাফ
 
-## 2. Tech Stack
+## ২। প্রযুক্তি স্ট্যাক
 
-- Backend: Laravel
-- Frontend: Blade templates
-- Database: MySQL
-- Payments: SSLCommerz (bKash, Nagad, Card)
+- ব্যাকএন্ড: Laravel (PHP)
+- ফ্রন্টএন্ড: Blade টেমপ্লেট
+- ডাটাবেস: MySQL
+- পেমেন্ট: SSLCommerz (bKash, Nagad, Card)
 
-## 3. Installation Guide
+## ৩। ইনস্টলেশন গাইড
 
-### 3.1 Clone the Repository
+নিচের ধাপগুলো অনুসরণ করে লোকালি প্রজেক্ট রান করুন:
+
+### ৩.১ রিপোজিটরি ক্লোন করুন
 
 ```bash
 git clone <your-repo-url>
 cd travel-app
 ```
 
-### 3.2 Install Dependencies
+### ৩.২ ডিপেনডেন্সি ইনস্টল
 
 ```bash
 composer install
 npm install
 ```
 
-### 3.3 Environment Setup
+### ৩.৩ পরিবেশ সেটআপ
 
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-Set your database and payment configuration in `.env`:
+তারপর `.env` ফাইলে ডাটাবেস ও পেমেন্ট কনফিগারেশন সেট করুন:
 
 ```
 DB_CONNECTION=mysql
@@ -64,207 +66,211 @@ SSLCOMMERZ_STORE_PASSWORD=your_store_password
 SSLCOMMERZ_SANDBOX=true
 ```
 
-### 3.4 Run Migrations
+> নোট: SSLCommerz এর টেস্ট/প্রোডাকশন ক্রেডেনশিয়াল আলাদা; `SSLCOMMERZ_SANDBOX=true` থাকলে স্যান্ডবক্স মোড চালু থাকবে।
+
+### ৩.৪ মাইগ্রেশন চালান
 
 ```bash
 php artisan migrate
 ```
 
-### 3.5 Run the App
+### ৩.৫ অ্যাপ চালান
 
 ```bash
 php artisan serve
 ```
 
-## 4. Project Structure
+এখানে `php artisan serve` চালালে লোকাল সার্ভারে অ্যাপ চলবে (ডিফল্ট: http://127.0.0.1:8000)।
 
-- `app/`
-    - Controllers, Models, Middleware, Providers
-- `routes/`
-    - Web and API routes
-- `resources/views/`
-    - Blade templates for UI
-- `database/`
-    - Migrations, seeders, factories
+## ৪। প্রজেক্ট স্ট্রাকচার (সংক্ষিপ্ত)
 
-## 5. Module Explanation
+- `app/` — কন্ট্রোলার, মডেল, মিডলওয়্যার, প্রোভাইডার ইত্যাদি
+- `routes/` — ওয়েব ও API রুটস
+- `resources/views/` — Blade টেমপ্লেট (UI)
+- `database/` — মাইগ্রেশন, সিডার, ফ্যাক্টোরি
 
-### Users
+## ৫। মডিউল ব্যাখ্যা
 
-- Registration and login flows
-- User records stored in `users` table
-- Admins can manage users from the admin panel
+নিচে প্রধান মডিউলগুলোর কাজ ও কোথায় ডাটা থাকে তা সংক্ষেপে দেওয়া হলো।
 
-### Bookings
+### ব্যবহারকারী (Users)
 
-- Users create bookings for packages
-- Stored in `bookings` table
-- Status can be pending or confirmed
+- রেজিস্ট্রেশন ও লগইন ফ্লো আছে।
+- ব্যবহারকারীর রেকর্ড `users` টেবিলে সংরক্ষিত হয়।
+- অ্যাডমিন অ্যাডমিন প্যানেল থেকে ব্যবহারকারী ম্যানেজ করতে পারে।
 
-### Packages
+### বুকিং (Bookings)
 
-- Admins manage package listings and details
-- Public view shows packages and booking options
+- ব্যবহারকারী প্যাকেজ বেছে নিয়ে বুকিং তৈরি করে।
+- বুকিংয়ের ডাটা `bookings` টেবিলে থাকে।
+- বুকিং স্ট্যাটাস হতে পারে: pending, confirmed, cancelled ইত্যাদি।
 
-### Payments
+### প্যাকেজ (Packages)
 
-- Payment records stored in `payments`
-- Integrated with SSLCommerz for bKash, Nagad, and Card
-- Admin can view payment status and logs
+- অ্যাডমিনরা প্যাকেজ লিস্টিং ও ডিটেইলস ম্যানেজ করে।
+- প্রকাশ্য পৃষ্ঠায় প্যাকেজ দেখা ও বুকিং অপশন থাকে।
 
-### Reports
+### পেমেন্ট (Payments)
 
-- Admin reports show KPIs and charts
-- Covers revenue, bookings, users, coupons, and inventory
+- পেমেন্ট রেকর্ড `payments` টেবিলে থাকে।
+- SSLCommerz এর মাধ্যমে bKash, Nagad ও কার্ড পেমেন্ট সমর্থিত।
+- অ্যাডমিন প্যানেলে পেমেন্ট স্ট্যাটাস ও লগ দেখা যায়।
 
-### Coupons
+### রিপোর্ট (Reports)
 
-- Admins create and manage coupon codes
-- Stored in `coupons` table
-- Coupons can be applied on the checkout page
-- Discounts are saved in the booking record
+- অ্যাডমিন রিপোর্ট পেজে KPI এবং চার্ট দেখানো হয়।
+- রিপোর্টে রয়েছে রেভেনিউ, বুকিং সংখ্যা, ব্যবহারকারী স্ট্যাটাস, কুপন ও ইনভেন্টরি সম্পর্কিত সারাংশ।
 
-### Settings
+### কুপন (Coupons)
 
-- Settings is reserved for system-wide configuration
-- Typical items include payment keys, mail settings, and branding
-- In this project, the page is a placeholder for future admin controls
+- অ্যাডমিন কুপন কোড তৈরি ও ম্যানেজ করে।
+- কুপনগুলো `coupons` টেবিলে থাকে।
+- চেকআউট পেজে কুপন প্রয়োগ করা যায়; ডিসকাউন্টটি বুকিং রেকর্ডে সেভ হয়।
 
-## 6. Authentication System
+### সেটিংস (Settings)
 
-- Session-based authentication
-- Admin and user roles are separate
-- Admin routes are protected by `auth` and `admin` middleware
-- Login and logout handled by auth controllers
+- সার্বিক সিস্টেম কনফিগারেশন ধারণ করার জন্য রিজার্ভ রাখা হয়েছে।
+- সাধারণ সেটিংস: পেমেন্ট কী, মেইল সেটিংস, ব্র্যান্ডিং ইত্যাদি।
+- বর্তমানে সেটিংস পেজটি ভবিষ্যতের কন্ট্রোল প্যানেল কনফিগারেশনের জন্য প্লেসহোল্ডার।
 
-## 7. Payment System
+## ৬। অথেনটিকেশন সিস্টেম
 
-### How Payment Works
+- সেশন-ভিত্তিক অথেনটিকেশন ব্যবহার করা হয়েছে।
+- অ্যাডমিন ও সাধারণ ব্যবহারকারীর রোল আলাদা।
+- অ্যাডমিন রুটগুলো `auth` ও কাস্টম `admin` মিডলওয়্যারের মাধ্যমে সুরক্ষিত।
+- লগইন/লগআউট কন্ট্রোলার দ্বারা নিয়ন্ত্রিত।
 
-1. User creates a booking
-2. User initiates payment from checkout
-3. Payment request sent to SSLCommerz
-4. Gateway returns success or failure
-5. Payment and booking are updated
+## ৭। পেমেন্ট সিস্টেম
 
-### Supported Methods
+### পেমেন্ট কিভাবে কাজ করে
+
+১. ব্যবহারকারী বুকিং তৈরি করে
+২. চেকআউট থেকে পেমেন্ট শুরু করে
+৩. SSLCommerz-এ পেমেন্ট রিকোয়েস্ট পাঠানো হয়
+৪. গেটওয়ে সাফল্য বা ব্যর্থতার রেসপন্স দেয়
+৫. রেসপন্স ভেরিফাই করে `payments` ও `bookings` টেবিলে আপডেট করা হয়
+
+### সমর্থিত পেমেন্ট মেথড
 
 - bKash
 - Nagad
-- Card (Visa or Mastercard)
+- Card (Visa/Mastercard)
 
-### Payment Flow (Text Diagram)
+### পেমেন্ট ফ্লো (সরল পাঠচিত্র)
 
 ```
 User -> Checkout -> Payment Initiate -> SSLCommerz
 SSLCommerz -> Success/Fail Callback -> Verify -> Update Payment + Booking
 ```
 
-## 8. How to Edit & Update the Project
+## ৮। প্রজেক্ট সম্পাদনা ও আপডেট করার নির্দেশিকা
 
-### Edit Blade UI (Views)
+নিচে সাধারণ কাজগুলো কীভাবে করবেন তার নির্দেশ আছে।
 
-- Files live in `resources/views/`
-- Example: `resources/views/payments/checkout.blade.php`
+### Blade UI সম্পাদনা (ভিউ)
 
-### Edit Controller Logic
+- ভিউ ফাইলগুলো আছে `resources/views/` ফোল্ডারে।
+- উদাহরণ: `resources/views/payments/checkout.blade.php`
 
-- Controllers are in `app/Http/Controllers/`
-- Example: `PaymentController.php`
+### কন্ট্রোলার লজিক সম্পাদনা
 
-### Edit Routes
+- কন্ট্রোলারগুলো আছে `app/Http/Controllers/` ফোল্ডারে।
+- উদাহরণ: `PaymentController.php`
 
-- Web routes live in `routes/web.php`
+### রুট সম্পাদনা
 
-### Add a New Feature
+- ওয়েব রুটস `routes/web.php` ফাইলে থাকে।
 
-1. Create a controller in `app/Http/Controllers`
-2. Add a route in `routes/web.php`
-3. Create a Blade view in `resources/views`
+### নতুন ফিচার যোগ করার ধাপ
 
-### Update an Existing Module (Example: Bookings)
+১. `app/Http/Controllers` ফোল্ডারে একটি নতুন কন্ট্রোলার তৈরি করুন
+২. `routes/web.php` এ রুট যুক্ত করুন
+৩. `resources/views` এ Blade ভিউ তৈরি করুন
 
-- Update booking logic in `BookingController`
-- Update booking views in `resources/views/admin/bookings.blade.php`
-- Update related migrations or models if needed
+### বিদ্যমান মডিউল আপডেট (উদাহরণ: Bookings)
 
-### Update Database
+- `BookingController` এ লজিক আপডেট করুন
+- অ্যাডমিন ভিউ আপডেট করুন: `resources/views/admin/bookings.blade.php`
+- প্রয়োজনে মাইগ্রেশন বা মডেল পরিবর্তন করুন
 
-1. Create a new migration
-2. Run `php artisan migrate`
+### ডাটাবেস আপডেট
 
-### Maintain Admin Panel
+১. নতুন মাইগ্রেশন তৈরি করুন
+২. চালান: `php artisan migrate`
 
-- Keep consistent UI patterns and layouts in `resources/views/layouts/admin.blade.php`
-- Use shared partials for sidebar and header
+### অ্যাডমিন প্যানেল রক্ষণাবেক্ষণ
 
-## 9. API / Route Documentation
+- UI কনসিস্টেন্সি বজায় রাখুন: `resources/views/layouts/admin.blade.php`
+- সাইডবার, হেডার ইত্যাদির জন্য শেয়ার্ড পারশিয়াল ব্যবহার করুন
 
-### Public Routes
+## ৯। API / রুট ডকুমেন্টেশন
 
-- `/` : Landing page
-- `/login` : Opens login modal
-- `/register` : Registration page
-- `/logout` : Log out user
+### পাবলিক রুটস
 
-### Booking Routes (Auth Required)
+- `/` : ল্যান্ডিং পেজ
+- `/login` : লগইন পেজ/মডাল
+- `/register` : রেজিস্ট্রেশন পেজ
+- `/logout` : লগআউট
 
-- `/bookings/from-package` : Create booking from a package
-- `/payment/checkout/{booking}` : Show checkout
-- `/payment/initiate` : Start payment
+### বুকিং রুটস (অথেনটিকেশন প্রয়োজন)
 
-### Payment Callbacks
+- `/bookings/from-package` : কোন প্যাকেজ থেকে বুকিং তৈরি
+- `/payment/checkout/{booking}` : চেকআউট দেখানো
+- `/payment/initiate` : পেমেন্ট শুরু করা
 
-- `/payment/success` : Gateway success callback
-- `/payment/fail` : Gateway fail callback
-- `/payment/cancel` : Gateway cancel callback
-- `/payment/ipn` : Gateway IPN callback
+### পেমেন্ট কলব্যাকস
 
-### Admin Routes (Auth + Admin)
+- `/payment/success` : গেটওয়ে সাফল্য কলব্যাক
+- `/payment/fail` : গেটওয়ে ব্যর্থ কলব্যাক
+- `/payment/cancel` : বাতিল কলব্যাক
+- `/payment/ipn` : আইপিএন (IPN) কলব্যাক
 
-- `/admin` : Dashboard
-- `/admin/users` : User management
-- `/admin/bookings` : Booking management
-- `/admin/packages` : Package management
-- `/admin/payments` : Payment management
-- `/admin/reports` : Reports
-- `/admin/hotels` : Hotel management
-- `/admin/transport` : Transport management
-- `/admin/coupons` : Coupon management
-- `/admin/settings` : Admin settings placeholder
+### অ্যাডমিন রুটস (Auth + Admin)
 
-## 10. Best Practices
+- `/admin` : ড্যাশবোর্ড
+- `/admin/users` : ব্যবহারকারী ম্যানেজ
+- `/admin/bookings` : বুকিং ম্যানেজ
+- `/admin/packages` : প্যাকেজ ম্যানেজ
+- `/admin/payments` : পেমেন্ট ম্যানেজ
+- `/admin/reports` : রিপোর্ট
+- `/admin/hotels` : হোটেল ম্যানেজ
+- `/admin/transport` : পরিবহন ম্যানেজ
+- `/admin/coupons` : কুপন ম্যানেজ
+- `/admin/settings` : সেটিংস (প্লেসহোল্ডার)
 
-- Use CSRF protection for all forms
-- Validate all user input in controllers
-- Keep business logic inside controllers and services
-- Follow MVC pattern strictly
-- Reuse Blade partials for shared UI
+## ১০। সর্বোত্তম অনুশীলন (Best Practices)
 
-## 11. Future Improvements
+- সকল ফর্মে CSRF প্রটেকশন ব্যবহার করুন
+- কন্ট্রোলারে সকল ইনপুট ভ্যালিডেশন প্রয়োগ করুন
+- ব্যবসায়িক লজিক কন্ট্রোলার/সার্ভিসে রাখুন
+- MVC প্যাটার্ন মেনে কোড লিখুন
+- শেয়ার্ড UI অংশগুলো Blade পারশিয়াল হিসেবে পুনঃব্যবহার করুন
 
-- Email notifications for bookings and payments
-- Role-based permissions with policies
-- Export reports to CSV or PDF
-- Real-time dashboard analytics
-- Public API for partners
+## ১১। ভবিষ্যতে যোগ করার বিষয়সমূহ
 
-## 12. Common Errors & Fixes
+- বুকিং ও পেমেন্ট-গত ইমেইল নোটিফিকেশন
+- পলিসি ভিত্তিক রোল-ভিত্তিক পারমিশন
+- রিপোর্ট এক্সপোর্ট (CSV/PDF) আরো শক্তিশালী করা
+- রিয়েল-টাইম ড্যাশবোর্ড অ্যানালিটিক্স
+- পার্টনারদের জন্য পাবলিক API
 
-### Payment Fails with Unauthorized
+## ১২। সাধারণ ত্রুটি ও সমাধান
 
-- Check SSLCommerz credentials in `.env`
-- Clear config cache: `php artisan config:clear`
+### পেমেন্ট Unauthorized এরর
 
-### Storage Image Not Loading
+- `.env` এ SSLCommerz ক্রেডেনশিয়াল ঠিক আছে কি দেখুন
+- কনফিগ ক্যাশ ক্লিয়ার করুন: `php artisan config:clear`
 
-- Run `php artisan storage:link`
-- Ensure file permissions allow access
+### স্টোরেজে ইমেজ লোড না হওয়া
 
-### App Key Missing
+- চালান: `php artisan storage:link`
+- ফাইল পারমিশন চেক করুন (ওয়েব সার্ভার থেকে পঠন-অনুমতি আছে কি)
 
-- Run `php artisan key:generate`
+### অ্যাপ কী মিসিং
 
-### Cache Issues
+- চালান: `php artisan key:generate`
 
-- Clear cache: `php artisan cache:clear`
+### ক্যাশ সম্পর্কিত সমস্যা
+
+- ক্লিয়ার করুন: `php artisan cache:clear`
+

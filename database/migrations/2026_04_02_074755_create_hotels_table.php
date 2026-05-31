@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('status')->default('active');
             $table->string('image_url')->nullable();
             $table->text('description')->nullable();
+$table->decimal('phone number', 15, 0)->nullable();
             $table->timestamps();
         });
     }

@@ -24,12 +24,23 @@ class AgencyAuthController extends Controller
             'phone' => ['required', 'string', 'max:50'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
             'logo' => ['nullable', 'image', 'max:2048'],
+            // Validate trade license number as optional string
+            'trade_license_number' => ['nullable', 'string', 'max:255'],
+            // Validate business document file: must be PDF or image, max 5MB (5120 KB)
+            'business_document' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
         ]);
 
-        // Store a logo upload when provided.
+        // Store logo upload when provided
         $logoPath = null;
         if ($request->hasFile('logo')) {
             $logoPath = $request->file('logo')->store('agencies', 'public');
+        }
+
+        // Store business document upload when provided to agency_documents folder
+        $businessDocPath = null;
+        if ($request->hasFile('business_document')) {
+            // Store document in storage/app/public/agency_documents with a unique filename
+            $businessDocPath = $request->file('business_document')->store('agency_documents', 'public');
         }
 
         Agency::create([
@@ -39,6 +50,10 @@ class AgencyAuthController extends Controller
             'phone' => $data['phone'],
             'password' => Hash::make($data['password']),
             'logo_path' => $logoPath,
+            // Save verification fields
+            'trade_license_number' => $data['trade_license_number'] ?? null,
+            'business_document' => $businessDocPath,
+            // Set new agency status as pending for admin approval
             'status' => 'pending',
             'registered_at' => now(),
         ]);

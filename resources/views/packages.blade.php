@@ -74,7 +74,11 @@
                                     <input type="hidden" name="package_id" value="{{ $package->id }}">
                                     <input type="hidden" name="package_name" value="{{ $package->name }}">
                                     <input type="hidden" name="amount" value="{{ $package->price }}">
-                                    <input type="date" name="travel_date" class="package-input">
+                                    {{-- Travel date must be today or in future --}}
+                                    <input type="date" name="travel_date" class="package-input" min="{{ now()->format('Y-m-d') }}" required>
+                                    @error('travel_date')
+                                        <div style="color: #e74c3c; font-size: 0.85rem; margin-top: 0.25rem;">{{ $message }}</div>
+                                    @enderror
                                     <input type="text" name="coupon_code" class="package-input" placeholder="Coupon code">
                                     <button type="submit" class="btn-primary">Book Now</button>
                                 </form>
